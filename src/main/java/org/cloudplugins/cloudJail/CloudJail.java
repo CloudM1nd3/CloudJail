@@ -1,6 +1,5 @@
 package org.cloudplugins.cloudJail;
 
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cloudplugins.cloudJail.commands.Commands;
 import org.cloudplugins.cloudJail.configs.Config;
@@ -11,7 +10,6 @@ import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 
 import java.io.File;
-import java.sql.SQLException;
 
 public final class CloudJail extends JavaPlugin {
     private static CloudJail instance;

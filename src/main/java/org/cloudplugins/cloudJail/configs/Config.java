@@ -44,25 +44,25 @@ public class Config {
     private static boolean addMissingDefaults() {
         boolean changed = false;
 
-        if (!config.isSet("block-chat")) {
-            config.set("block-chat", "true");
+        if (!config.isSet("deny.chat")) {
+            config.set("deny.chat", "true");
             changed = true;
         }
-        if (!config.isSet("block-commands")) {
-            config.set("block-commands", "true");
+        if (!config.isSet("deny.consume")) {
+            config.set("deny.consume", "false");
             changed = true;
         }
-        if (!config.isSet("block-consume")) {
-            config.set("block-consume", "false");
+        if (!config.isSet("deny.movement")) {
+            config.set("deny.movement", "false");
             changed = true;
         }
-        if (config.getList("Allowed-cmds") == null){
+        if (!config.isSet("deny.commands")) {
+            config.set("deny.commands", "true");
+            changed = true;
+        }
+        if (!config.isSet("deny.allowed-commands")){
             List<String> allowedCmds = List.of("/rules", "/links");
-            config.set("allowed-cmds", allowedCmds);
-            changed = true;
-        }
-        if (!config.isSet("block-movement")) {
-            config.set("block-movement", "false");
+            config.set("deny.allowed-commands", allowedCmds);
             changed = true;
         }
 

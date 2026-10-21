@@ -65,7 +65,7 @@ public class PunishmentManager {
     }
 
     public boolean jail(Player player, String jailName, String punisher,
-                        String reason, long durationMillis) {
+                        long durationMillis, String reason) {
         if (activePunishments.containsKey(player.getUniqueId())) {
             return false;
         }

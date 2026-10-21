@@ -1,10 +1,11 @@
-block-chat: true
-block-commands: true
-block-consume: false
-Allowed-commands:
-  - /rules
-  - /links
-block-movement: false
+prohibition:
+  block-chat: true
+  block-movement: false
+  block-consume: false
+  block-commands: true
+  allowed-commands:
+    - /rules
+    - /links
 
 Jails: []
 

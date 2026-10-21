@@ -11,7 +11,7 @@ import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.Punishment;
-
+import org.cloudplugins.cloudJail.utils.TimeParser;
 import java.util.Arrays;
 
 public class Commands implements CommandExecutor {
@@ -25,7 +25,7 @@ public class Commands implements CommandExecutor {
         }
 
         if (!sender.hasPermission("cloudJail.admin")) {
-            //Messages.NO_PERMISSION.send(sender);
+            Messages.NO_PERMISSION.send(sender);
             return true;
         }
 
@@ -62,19 +62,19 @@ public class Commands implements CommandExecutor {
     //jail create <имя> [-n]
     private void handleCreate(CommandSender sender, String[] args) {
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("[CloudJail] Эту команду можно использовать только в игре.");
+            Messages.ONLY_PLAYER.send(sender);
             return;
         }
 
         if (args.length < 2) {
-            player.sendMessage("[CloudJail] Использование: /jail create <имя> [-n]");
+            Messages.USAGE_CREATE.send(player);
             return;
         }
 
         String name = args[1];
         boolean noSymbols = name.matches("^[a-zA-Z0-9]+$");
         if(!noSymbols){
-            player.sendMessage("[CloudJail] Имя тюрьма должно состоять только из букавок и/или цифарок!");
+            Messages.JAIL_NAME_INVALID.send(player);
             return;
         }
 
@@ -82,19 +82,19 @@ public class Commands implements CommandExecutor {
 
         try {
             if (JailManager.getInstance().createJail(name, player.getLocation(), force)) {
-                player.sendMessage("[CloudJail] Тюрьма " + name + " создана!");
+                Messages.JAIL_CREATED.send(sender, "%name%", name);
             } else {
-                player.sendMessage("[CloudJail] Тюрьма " + name + " уже существует. Чтобы пересоздать, добавь -n в конец команды.");
+                Messages.JAIL_EXISTS.send(sender, "%name%", name);
             }
         } catch (Exception e) {
-            player.sendMessage("[CloudJail] Ошибка создания тюрьмы. Ошибка в консоли ^_^");
+            Messages.JAIL_ERROR.send(player);
             plugin.getLogger().severe("Jail creation failed: " + e.getMessage());
         }
     }
 
     private void handleDelete(CommandSender sender, String[] args){
         if (args.length < 2) {
-            sender.sendMessage("[CloudJail] Использование: /jail delete <имя>");
+            Messages.USAGE_DELETE.send(sender);
             return;
         }
 
@@ -102,24 +102,24 @@ public class Commands implements CommandExecutor {
 
         try {
             if (JailManager.getInstance().deleteJail(jailName)) {
-                sender.sendMessage("[CloudJail] Тюрьма " + jailName + " удалена.");
+                Messages.JAIL_DELETED.send(sender, "%name%", jailName);
             } else {
-                sender.sendMessage("[CloudJail] Тюрьма " + jailName + " не найдена.");
+                Messages.JAIL_NOT_FOUND.send(sender, "%name%", jailName);
             }
         } catch (Exception e) {
-            sender.sendMessage("[CloudJail] Ошибка удаления тюрьмы. Ошибка в консоли ^_^");
+            Messages.JAIL_ERROR.send(sender);
             plugin.getLogger().severe("Jail deletion failed: " + e.getMessage());
         }
     }
 
     private void handleTeleport(CommandSender sender, String[] args){
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("[CloudJail] Эту команду можно использовать только в игре.");
+            Messages.ONLY_PLAYER.send(sender);
             return;
         }
 
         if (args.length < 2) {
-            sender.sendMessage("[CloudJail] Использование: /jail teleport <имя>");
+            Messages.USAGE_TELEPORT.send(player);
             return;
         }
 
@@ -127,41 +127,43 @@ public class Commands implements CommandExecutor {
 
         try {
             if (JailManager.getInstance().teleportToJail(name, player)) {
-                sender.sendMessage("[CloudJail] Телепортация...");
+                Messages.JAIL_TELEPORTATION.send(player);
             } else {
-                sender.sendMessage("[CloudJail] Тюрьма " + name + " не найдена.");
+                Messages.JAIL_NOT_FOUND.send(player, "%name%", name);
             }
         } catch (Exception e) {
-            sender.sendMessage("[CloudJail] Ошибка телепортации. Ошибка в консоли ^_^");
+            Messages.JAIL_ERROR.send(player);
             plugin.getLogger().severe("Teleportation to jail failed: " + e.getMessage());
         }
     }
 
     private void handleJail(CommandSender sender, String[] args){
-        if (args.length < 3) {
-            sender.sendMessage("[CloudJail] Использование: /jail jail <имя> <тюрьма> <срок> <причина>");
+        if (args.length < 4) {
+            Messages.USAGE_JAIL.send(sender);
             return;
         }
 
         Player player = Bukkit.getPlayer(args[1]);
         if(player == null){
-            sender.sendMessage("[CloudJail] Игрок " + args[1] + " не найден!");
+            Messages.PLAYER_NOT_FOUND.send(sender, "%player%", args[1]);
             return;
         }
 
         if(PunishmentManager.getInstance().getActivePunishment(player.getUniqueId()) != null){
-            sender.sendMessage("[CloudJail] Игрок " + player.getName() + " уже отбывает срок под шконкой!");
+            Messages.ALREADY_JAILED.send(sender, "%player%", player.getName());
             return;
         }
 
         String jailName = args[2];
         if(!JailManager.getInstance().hasJail(jailName)){
-            sender.sendMessage("[CloudJail] Тюрьма " + jailName + " не найдена!");
+            Messages.JAIL_NOT_FOUND.send(sender, "%name%", jailName);
             return;
         }
 
+        long time = TimeParser.parse(args[3]);
+
         String reason;
-        if (args.length > 3) {
+        if (args.length > 4) {
             String[] subArray = Arrays.copyOfRange(args, 3, args.length);
             reason = String.join(" ", subArray);
         } else {
@@ -172,30 +174,31 @@ public class Commands implements CommandExecutor {
                 player,
                 jailName,
                 sender.getName(),
-                reason,
-                10000
+                time,
+                reason
         );
-        sender.sendMessage("Игроку " + player.getName() + " порвут очко в тюрьме " + jailName + "!");
+        Messages.JAIL_SUCCESS.send(sender, "%player%", player.getName(), "%jail%", jailName);
     }
 
     private void handleUnJail(CommandSender sender, String[] args){
         if (args.length < 2) {
-            sender.sendMessage("[CloudJail] Использование: /jail unjail <имя>");
+            Messages.USAGE_UNJAIL.send(sender);
             return;
         }
 
         Player player = Bukkit.getPlayer(args[1]);
         if(player == null){
-            sender.sendMessage("[CloudJail] Игрок " + args[1] + " не найден!");
+            Messages.PLAYER_NOT_FOUND.send(sender, "%player%", args[1]);
             return;
         }
 
         Punishment playerPunishment = PunishmentManager.getInstance().getActivePunishment(player.getUniqueId());
         if(playerPunishment == null){
-            sender.sendMessage("[CloudJail] Игрок " + args[1] + " не на нарах!");
+            Messages.NOT_JAILED.send(sender, "%player%", player.getName());
             return;
         }
 
         PunishmentManager.getInstance().release(playerPunishment, Punishment.Status.RELEASED);
+        Messages.UNJAIL_SUCCESS.send(sender, "%player%", player.getName());
     }
 }

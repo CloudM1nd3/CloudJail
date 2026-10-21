@@ -37,12 +37,12 @@ public class PlayerListener implements Listener {
     }
 
     public void loadSettings() {
-        blockChat = Config.getBoolean("block-chat", true);
-        blockCommands = Config.getBoolean("block-commands", true);
-        blockConsume = Config.getBoolean("block-consume", false);
-        allowedCommands = Config.getStringList("allowed-commands")
+        blockChat = Config.getBoolean("deny.chat", true);
+        blockMovement = Config.getBoolean("deny.movement", false);
+        blockConsume = Config.getBoolean("deny.consume", false);
+        blockCommands = Config.getBoolean("deny.commands", true);
+        allowedCommands = Config.getStringList("deny.allowed-commands")
                 .stream().map(String::toLowerCase).toList();
-        blockMovement = Config.getBoolean("block-movement", false);
     }
 
     private boolean isJailed(Player player) {
