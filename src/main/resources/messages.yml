@@ -1,0 +1,26 @@
+prefix: "&8[&bCloudJail&8]&r "
+
+command:
+  no-permission: "{prefix}&cУ вас нет прав на выполнение этой команды."
+  reload-failed: "{prefix}&cОшибка при перезагрузке. Смотрите в консоль."
+  reload-success: "{prefix}&aКонфигурация и языковые файлы перезагружены."
+  only-player: "{prefix}&cЭту команду можно использовать только в игре."
+  usage-create: "{prefix}&cИспользование: /jail create <имя> [-n]"
+  usage-delete: "{prefix}&cИспользование: /jail delete <имя>"
+
+jail:
+  name-invalid: "{prefix}&cВ имени тюрьмы нельзя использовать точку."
+  created: "{prefix}&aТюрьма &e%name%&a создана."
+  exists: "{prefix}&cТюрьма &e%name%&c уже существует. Чтобы пересоздать, добавьте &e-n&c в конец команды."
+  deleted: "{prefix}&aТюрьма &e%name%&a удалена."
+  not-found: "{prefix}&cТюрьма &e%name%&c не найдена."
+  error: "{prefix}&cПроизошла ошибка. Подробности в консоли."
+
+  deny:
+    break: "{prefix}&cВ тюрьме запрещено ломать блоки."
+    place: "{prefix}&cВ тюрьме запрещено ставить блоки."
+    interact: "{prefix}&cВ тюрьме запрещено использовать предметы."
+    consume: "{prefix}&cВыйди из тюрьмы, потом поешь."
+    damage: "{prefix}&cНельзя драться, срок добавлю."
+    chat: "{prefix}&cПисать в чат нельзя, учи азбуку морзе."
+    command: "{prefix}&cВ тюрьме запрещено использовать эту команду."

@@ -5,6 +5,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.cloudplugins.cloudJail.CloudJail;
 import org.cloudplugins.cloudJail.objects.Jail;
 
+import java.util.List;
+
 public class Config {
     private static CloudJail plugin;
     private static FileConfiguration config;
@@ -42,8 +44,25 @@ public class Config {
     private static boolean addMissingDefaults() {
         boolean changed = false;
 
-        if (!config.isSet("lang")) {
-            config.set("lang", "ru");
+        if (!config.isSet("block-chat")) {
+            config.set("block-chat", "true");
+            changed = true;
+        }
+        if (!config.isSet("block-commands")) {
+            config.set("block-commands", "true");
+            changed = true;
+        }
+        if (!config.isSet("block-consume")) {
+            config.set("block-consume", "false");
+            changed = true;
+        }
+        if (config.getList("Allowed-cmds") == null){
+            List<String> allowedCmds = List.of("/rules", "/links");
+            config.set("allowed-cmds", allowedCmds);
+            changed = true;
+        }
+        if (!config.isSet("block-movement")) {
+            config.set("block-movement", "false");
             changed = true;
         }
 
@@ -66,6 +85,14 @@ public class Config {
     public static void removeJail(String name){
         config.set("Jails." + name, null);
         save();
+    }
+
+    public static boolean getBoolean(String path, boolean defaltValue) {
+        return config.getBoolean(path, defaltValue);
+    }
+
+    public static List<String> getStringList(String path) {
+        return config.getStringList(path);
     }
 
     public static void setValue(String path, Object value) {

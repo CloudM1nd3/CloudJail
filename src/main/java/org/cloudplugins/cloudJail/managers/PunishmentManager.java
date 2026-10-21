@@ -22,16 +22,16 @@ public class PunishmentManager {
 
     private final Map<UUID, Punishment> activePunishments = new ConcurrentHashMap<>();
 
-    private PunishmentManager(CloudJail plugin) throws Exception {
+    private PunishmentManager(CloudJail plugin, Database db) throws Exception {
         this.plugin = plugin;
-        this.db = new Database(new File(plugin.getDataFolder(), "punishments.db"));
+        this.db = db;
     }
 
-    public static void init(CloudJail plugin) throws Exception {
+    public static void init(CloudJail plugin, Database db) throws Exception {
         if (instance != null) {
             throw new IllegalStateException("PunishmentManager already initialized");
         }
-        instance = new PunishmentManager(plugin);
+        instance = new PunishmentManager(plugin, db);
         instance.load();
         instance.startTimer();
     }
@@ -93,7 +93,7 @@ public class PunishmentManager {
         }
     }
 
-    private void teleportToJail(Player player, String jailName){
+    private void teleportToJail(Player player, String jailName) {
         Jail jail = JailManager.getInstance().getJailByName(jailName);
         if (player == null || jail == null) return;
 
@@ -103,9 +103,9 @@ public class PunishmentManager {
         }
     }
 
-    private void teleportToLastLocation(Punishment punishment){
+    private void teleportToLastLocation(Punishment punishment) {
         Player player = Bukkit.getPlayer(punishment.getPlayerUUID());
-        if(player == null){
+        if (player == null) {
             return;
         }
         Location lastLocation = punishment.getLastLocation();
@@ -119,10 +119,5 @@ public class PunishmentManager {
     public void getHistory(UUID uuid, Consumer<List<Punishment>> callback) {
         db.loadHistory(uuid).thenAccept(list ->
                 Bukkit.getScheduler().runTask(plugin, () -> callback.accept(list)));
-    }
-
-    public void shutdown() {
-        db.close();
-        instance = null;
     }
 }

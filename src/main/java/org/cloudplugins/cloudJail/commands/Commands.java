@@ -6,6 +6,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.cloudplugins.cloudJail.CloudJail;
+import org.cloudplugins.cloudJail.configs.Config;
+import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.Punishment;
@@ -28,6 +30,7 @@ public class Commands implements CommandExecutor {
         }
 
         switch (args[0].toLowerCase()) {
+            case "reload" -> handleReload(sender, args);
             case "create" -> handleCreate(sender, args);
             case "delete" -> handleDelete(sender,args);
             case "teleport", "tp" -> handleTeleport(sender, args);
@@ -39,6 +42,21 @@ public class Commands implements CommandExecutor {
         }
 
         return true;
+    }
+
+    private void handleReload(CommandSender sender, String[] args){
+        try {
+            Config.reload();
+            Messages.reload();
+            JailManager.getInstance().reload();
+            plugin.getPlayerListener().loadSettings();
+
+            Messages.RELOAD_SUCCESS.send(sender);
+        } catch (Exception e) {
+            Messages.RELOAD_FAILED.send(sender);
+            plugin.getLogger().severe("Reload failed: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     //jail create <имя> [-n]
