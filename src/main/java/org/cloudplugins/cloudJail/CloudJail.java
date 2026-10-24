@@ -1,7 +1,7 @@
 package org.cloudplugins.cloudJail;
 
 import org.bukkit.plugin.java.JavaPlugin;
-import org.cloudplugins.cloudJail.commands.Commands;
+import org.cloudplugins.cloudJail.commands.*;
 import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.database.Database;
@@ -34,13 +34,20 @@ public final class CloudJail extends JavaPlugin {
             return;
         }
 
-        getCommand("jail").setExecutor(new Commands());
+        getCommand("jailadmin").setExecutor(new JailAdminCommand());
+        getCommand("jail").setExecutor(new JailCommand());
+        getCommand("unjail").setExecutor(new UnjailCommand());
+        getCommand("jailhistory").setExecutor(new JailHistoryCommand());
+        getCommand("jailinfo").setExecutor(new JailInfoCommand());
         playerListener = new PlayerListener();
         getServer().getPluginManager().registerEvents(playerListener, this);
     }
 
     @Override
     public void onDisable() {
+        if (PunishmentManager.getInstance() != null) {
+            PunishmentManager.getInstance().saveAll();
+        }
         if (db != null) {
             db.close();
         }

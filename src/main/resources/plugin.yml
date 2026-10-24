@@ -7,4 +7,20 @@ load: POSTWORLD
 
 commands:
   jail:
-    description: jail ebaniy
+    description: Посадить игрока в тюрьму
+    usage: /jail <ник> <тюрьма> <время> [причина]
+  unjail:
+    description: Освободить игрока
+    usage: /unjail <ник>
+  jailhistory:
+    description: История наказаний игрока
+    usage: /jailhistory <ник>
+    aliases: [jailhist]
+  jailadmin:
+    description: Управление тюрьмами
+    usage: /jailadmin <create|delete|tp|reload>
+    aliases: [ja]
+  jailinfo:
+    description: Информация о Вашем на казании
+    usage: /jailinfo
+    aliases: [jinfo]

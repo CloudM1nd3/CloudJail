@@ -1,3 +1,5 @@
+offline-counting: false
+
 prohibition:
   block-chat: true
   block-movement: false

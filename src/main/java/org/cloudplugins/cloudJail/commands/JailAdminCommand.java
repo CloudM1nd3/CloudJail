@@ -1,6 +1,5 @@
 package org.cloudplugins.cloudJail.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -10,11 +9,8 @@ import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
-import org.cloudplugins.cloudJail.objects.Punishment;
-import org.cloudplugins.cloudJail.utils.TimeParser;
-import java.util.Arrays;
 
-public class Commands implements CommandExecutor {
+public class JailAdminCommand implements CommandExecutor {
     private CloudJail plugin = CloudJail.getInstance();
 
 
@@ -34,8 +30,6 @@ public class Commands implements CommandExecutor {
             case "create" -> handleCreate(sender, args);
             case "delete" -> handleDelete(sender,args);
             case "teleport", "tp" -> handleTeleport(sender, args);
-            case "jail" -> handleJail(sender, args);
-            case "unjail" -> handleUnJail(sender, args);
             default -> {
                 return false;
             }
@@ -50,6 +44,7 @@ public class Commands implements CommandExecutor {
             Messages.reload();
             JailManager.getInstance().reload();
             plugin.getPlayerListener().loadSettings();
+            PunishmentManager.getInstance().loadSettings();
 
             Messages.RELOAD_SUCCESS.send(sender);
         } catch (Exception e) {
@@ -135,70 +130,5 @@ public class Commands implements CommandExecutor {
             Messages.JAIL_ERROR.send(player);
             plugin.getLogger().severe("Teleportation to jail failed: " + e.getMessage());
         }
-    }
-
-    private void handleJail(CommandSender sender, String[] args){
-        if (args.length < 4) {
-            Messages.USAGE_JAIL.send(sender);
-            return;
-        }
-
-        Player player = Bukkit.getPlayer(args[1]);
-        if(player == null){
-            Messages.PLAYER_NOT_FOUND.send(sender, "%player%", args[1]);
-            return;
-        }
-
-        if(PunishmentManager.getInstance().getActivePunishment(player.getUniqueId()) != null){
-            Messages.ALREADY_JAILED.send(sender, "%player%", player.getName());
-            return;
-        }
-
-        String jailName = args[2];
-        if(!JailManager.getInstance().hasJail(jailName)){
-            Messages.JAIL_NOT_FOUND.send(sender, "%name%", jailName);
-            return;
-        }
-
-        long time = TimeParser.parse(args[3]);
-
-        String reason;
-        if (args.length > 4) {
-            String[] subArray = Arrays.copyOfRange(args, 3, args.length);
-            reason = String.join(" ", subArray);
-        } else {
-            reason = "Не указана!";
-        }
-
-        PunishmentManager.getInstance().jail(
-                player,
-                jailName,
-                sender.getName(),
-                time,
-                reason
-        );
-        Messages.JAIL_SUCCESS.send(sender, "%player%", player.getName(), "%jail%", jailName);
-    }
-
-    private void handleUnJail(CommandSender sender, String[] args){
-        if (args.length < 2) {
-            Messages.USAGE_UNJAIL.send(sender);
-            return;
-        }
-
-        Player player = Bukkit.getPlayer(args[1]);
-        if(player == null){
-            Messages.PLAYER_NOT_FOUND.send(sender, "%player%", args[1]);
-            return;
-        }
-
-        Punishment playerPunishment = PunishmentManager.getInstance().getActivePunishment(player.getUniqueId());
-        if(playerPunishment == null){
-            Messages.NOT_JAILED.send(sender, "%player%", player.getName());
-            return;
-        }
-
-        PunishmentManager.getInstance().release(playerPunishment, Punishment.Status.RELEASED);
-        Messages.UNJAIL_SUCCESS.send(sender, "%player%", player.getName());
     }
 }

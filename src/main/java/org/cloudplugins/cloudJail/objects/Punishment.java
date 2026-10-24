@@ -6,36 +6,69 @@ import java.util.UUID;
 public class Punishment {
     public enum Status { ACTIVE, EXPIRED, RELEASED }
 
+    private final int id;
     private final UUID playerUUID;
     private final String playerName;
     private final String jailName;
-    private final String punisher; //Консоль???
+    private final String punisher;
     private final String reason;
-    private final long startTime;
-    private final long endTime;
+    private final long startTime; //БД
+    private final long duration; //БД
+    private long remainingTime;
+    private long expectedEnd;
     private Status status;
-    private org.bukkit.Location lastLocation;  //попробовать просто с Location, если хуйня - отдельный класс организуем ^_^
+    private Location lastLocation;
+    private boolean pendingTeleport;
 
-
+    //Конструктор для новых записей (Id = -1)
     public Punishment(UUID playerUUID, String playerName, String jailName, String punisher, String reason,
-                      long startTime, long endTime, Status status, Location lastLocation) {
+                      long startTime, long duration, Status status, Location lastLocation) {
+        this(-1, playerUUID, playerName, jailName, punisher, reason, startTime, duration, duration, status, lastLocation);
+    }
+
+    //Конструктор для существующих записей, ID из базы + RemainingTime
+    public Punishment(int id, UUID playerUUID, String playerName, String jailName, String punisher, String reason,
+                      long startTime, long duration, long remainingTime, Status status, Location lastLocation) {
+        this.id = id;
         this.playerUUID = playerUUID;
         this.playerName = playerName;
         this.jailName = jailName;
         this.punisher = punisher;
         this.reason = reason;
         this.startTime = startTime;
-        this.endTime = endTime;
+        this.duration = duration;
+        this.remainingTime = remainingTime;
+        this.expectedEnd = System.currentTimeMillis() + remainingTime;
         this.status = status;
         this.lastLocation = lastLocation;
     }
 
-    public boolean isExpired() {
-        return System.currentTimeMillis() >= endTime;
+    public boolean getPendingTeleport() {
+        return pendingTeleport;
     }
 
-    public long getRemainingMillis() {
-        return Math.max(0, endTime - System.currentTimeMillis());
+    public void setPendingTeleport(boolean status) {
+        this.pendingTeleport = status;
+    }
+
+    public long getRemainingTime() {
+        return remainingTime;
+    }
+
+    public boolean isExpired(Long now) {
+        return now >= expectedEnd;
+    }
+
+    public void updateExpectedEnd(){
+        expectedEnd = System.currentTimeMillis() + remainingTime;
+    }
+
+    public void updateRemainingTime() {
+        remainingTime = Math.max(0, expectedEnd - System.currentTimeMillis());
+    }
+
+    public int getId() {
+        return id;
     }
 
     public UUID getPlayerUUID() {
@@ -55,14 +88,15 @@ public class Punishment {
     }
 
     public String getReason() {
-        return reason; }
+        return reason;
+    }
 
     public long getStartTime() {
         return startTime;
     }
 
-    public long getEndTime() {
-        return endTime;
+    public long getDuration() {
+        return duration;
     }
 
     public Status getStatus() {
@@ -73,12 +107,11 @@ public class Punishment {
         this.status = status;
     }
 
-    public void setLastLocation(Location lastLocation){
-        this.lastLocation = lastLocation;
-    }
-
-    public Location getLastLocation(){
+    public Location getLastLocation() {
         return lastLocation;
     }
 
+    public void setLastLocation(Location lastLocation) {
+        this.lastLocation = lastLocation;
+    }
 }

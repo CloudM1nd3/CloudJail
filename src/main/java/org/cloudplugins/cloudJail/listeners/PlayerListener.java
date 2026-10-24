@@ -1,6 +1,7 @@
 package org.cloudplugins.cloudJail.listeners;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -65,6 +66,16 @@ public class PlayerListener implements Listener {
         if (!isJailed(e.getPlayer())) return;
         e.setCancelled(true);
         sendAB(e.getPlayer(), Messages.DENY_PLACE);
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent e) {
+        PunishmentManager.getInstance().handleJoin(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent e) {
+        PunishmentManager.getInstance().handleQuit(e.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -143,6 +154,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onConsume(PlayerItemConsumeEvent e) {
+        Bukkit.getLogger().info("Пытаюсь отменить" + blockConsume);
         if (!isJailed(e.getPlayer()) || !blockConsume) return;
         e.setCancelled(true);
         sendAB(e.getPlayer(), Messages.DENY_CONSUME);
@@ -196,12 +208,11 @@ public class PlayerListener implements Listener {
     public void onCommand(PlayerCommandPreprocessEvent e) {
         if (!isJailed(e.getPlayer()) || !blockCommands) return;
 
-        String cmd = e.getMessage().substring(1).split(" ")[0].toLowerCase();
-        if (cmd.contains(":")) {
-            cmd = cmd.substring(cmd.indexOf(':') + 1);
-        }
+        String msg = e.getMessage().toLowerCase();
 
-        if (allowedCommands.contains(cmd)) return;
+        for (String allowed : allowedCommands) {
+            if (msg.equals(allowed)) return;
+        }
 
         e.setCancelled(true);
         sendAB(e.getPlayer(), Messages.DENY_COMMAND);
@@ -214,10 +225,14 @@ public class PlayerListener implements Listener {
         Location pos1 = e.getFrom();
         Location pos2 = e.getTo();
 
-        if (pos1.getX() == pos2.getX() && pos1.getZ() == pos2.getZ()) return;
+        if (pos1.getX() == pos2.getX() && pos1.getY() == pos2.getY() && pos1.getZ() == pos2.getZ()) {
+            return;
+        }
 
-        e.setTo(new Location(pos1.getWorld(), pos1.getX(), pos2.getY(), pos1.getZ(),
-                pos2.getYaw(), pos2.getPitch()));
+        Location newTo = pos1.clone();
+        newTo.setYaw(pos2.getYaw());
+        newTo.setPitch(pos2.getPitch());
+        e.setTo(newTo);
     }
 
     @EventHandler(ignoreCancelled = true)

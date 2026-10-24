@@ -44,6 +44,10 @@ public class Config {
     private static boolean addMissingDefaults() {
         boolean changed = false;
 
+        if (!config.isSet("offline-calculation")) {
+            config.set("offline-calculation", "false");
+            changed = true;
+        }
         if (!config.isSet("deny.chat")) {
             config.set("deny.chat", "true");
             changed = true;

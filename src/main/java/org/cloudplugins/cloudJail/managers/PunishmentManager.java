@@ -2,14 +2,16 @@ package org.cloudplugins.cloudJail.managers;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.cloudplugins.cloudJail.CloudJail;
+import org.cloudplugins.cloudJail.configs.Config;
+import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.database.Database;
+import org.cloudplugins.cloudJail.objects.HistoryPage;
 import org.cloudplugins.cloudJail.objects.Jail;
 import org.cloudplugins.cloudJail.objects.Punishment;
 
-import java.io.File;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +21,7 @@ public class PunishmentManager {
     private static PunishmentManager instance;
     private final CloudJail plugin;
     private final Database db;
+    private boolean offlineCounting;
 
     private final Map<UUID, Punishment> activePunishments = new ConcurrentHashMap<>();
 
@@ -32,6 +35,7 @@ public class PunishmentManager {
             throw new IllegalStateException("PunishmentManager already initialized");
         }
         instance = new PunishmentManager(plugin, db);
+        instance.loadSettings();
         instance.load();
         instance.startTimer();
     }
@@ -40,16 +44,76 @@ public class PunishmentManager {
         return instance;
     }
 
+    public void loadSettings() {
+        boolean old = offlineCounting;
+        offlineCounting = Config.getBoolean("offline-counting", false);
+
+        if (old == offlineCounting) return;
+
+        for (Punishment p : activePunishments.values()) {
+            boolean online = Bukkit.getPlayer(p.getPlayerUUID()) != null;
+            if (online) continue;
+
+            if (offlineCounting) {
+                p.updateExpectedEnd();
+            } else {
+                p.updateRemainingTime();
+                db.updateRemaining(p.getPlayerUUID(), p.getRemainingTime());
+            }
+        }
+    }
+
     private void load() {
         for (Punishment p : db.loadActive().join()) {
             activePunishments.put(p.getPlayerUUID(), p);
+            if (Bukkit.getPlayer(p.getPlayerUUID()) != null) {
+                p.updateExpectedEnd();
+            }
+        }
+    }
+
+    public void handleJoin(Player player) {
+        Punishment p = activePunishments.get(player.getUniqueId());
+        if (p == null) return;
+
+        if (!offlineCounting) p.updateExpectedEnd();
+
+        if (p.isExpired(System.currentTimeMillis())) {
+            release(p, Punishment.Status.EXPIRED);
+        } else if (p.getPendingTeleport()) {
+            Messages.SET_JAILED.send(player);
+            teleportToJail(player, p.getJailName());
+            p.setPendingTeleport(false);
+            db.updatePendingTeleport(p.getPlayerUUID(), false);
+        }
+    }
+
+    public void handleQuit(Player player) {
+        Punishment p = activePunishments.get(player.getUniqueId());
+        if (p == null) return;
+
+        if (!offlineCounting) {
+            p.updateRemainingTime();
+            db.updateRemaining(p.getPlayerUUID(), p.getRemainingTime());
+        }
+    }
+
+    public void saveAll() {
+        for (Punishment p : activePunishments.values()) {
+            boolean online = Bukkit.getPlayer(p.getPlayerUUID()) != null;
+            if (online || offlineCounting) {
+                p.updateRemainingTime();
+            }
+            db.updateRemaining(p.getPlayerUUID(), p.getRemainingTime());
         }
     }
 
     private void startTimer() {
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            long now = System.currentTimeMillis();
             for (Punishment p : activePunishments.values()) {
-                if (p.isExpired()) {
+                if (Bukkit.getPlayer(p.getPlayerUUID()) == null) continue;
+                if (p.isExpired(now)) {
                     release(p, Punishment.Status.EXPIRED);
                 }
             }
@@ -64,7 +128,7 @@ public class PunishmentManager {
         return activePunishments.get(uuid);
     }
 
-    public boolean jail(Player player, String jailName, String punisher,
+    public boolean jail(OfflinePlayer player, String jailName, String punisher,
                         long durationMillis, String reason) {
         if (activePunishments.containsKey(player.getUniqueId())) {
             return false;
@@ -72,24 +136,36 @@ public class PunishmentManager {
 
         long now = System.currentTimeMillis();
         Punishment p = new Punishment(player.getUniqueId(), player.getName(), jailName, punisher, reason,
-                now, now + durationMillis, Punishment.Status.ACTIVE, player.getLocation());
+                now, durationMillis, Punishment.Status.ACTIVE, player.getLocation());
 
-        teleportToJail(player, jailName);
+        Player online = player.getPlayer();
+        if (online != null) {
+            Messages.SET_JAILED.send(online);
+            teleportToJail(online, jailName);
+        } else {
+            p.setPendingTeleport(true);
+        }
+
         activePunishments.put(player.getUniqueId(), p);
         db.insertPunishment(p);
         return true;
     }
 
-    public boolean release(Punishment punishment, Punishment.Status status) {
+    public void release(Punishment punishment, Punishment.Status status) {
         UUID playerUUID = punishment.getPlayerUUID();
         if (activePunishments.containsKey(playerUUID)) {
+            Player player = Bukkit.getPlayer(playerUUID);
             Punishment p = activePunishments.remove(playerUUID);
             teleportToLastLocation(p);
             p.setStatus(status);
+            if (player != null && player.isOnline()) {
+                if (status.equals(Punishment.Status.EXPIRED)) {
+                    Messages.TERM_ENDED.send(player);
+                } else {
+                    Messages.SET_RELEASED.send(player);
+                }
+            }
             db.releasePunishment(p);
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -116,8 +192,8 @@ public class PunishmentManager {
         }
     }
 
-    public void getHistory(UUID uuid, Consumer<List<Punishment>> callback) {
-        db.loadHistory(uuid).thenAccept(list ->
-                Bukkit.getScheduler().runTask(plugin, () -> callback.accept(list)));
+    public void getHistory(UUID uuid, int page, Consumer<HistoryPage> callback) {
+        db.loadHistory(uuid, page).thenAccept(result ->
+                Bukkit.getScheduler().runTask(plugin, () -> callback.accept(result)));
     }
 }
