@@ -11,6 +11,7 @@ import org.cloudplugins.cloudJail.database.Database;
 import org.cloudplugins.cloudJail.objects.HistoryPage;
 import org.cloudplugins.cloudJail.objects.Jail;
 import org.cloudplugins.cloudJail.objects.Punishment;
+import org.cloudplugins.cloudJail.voice.mods.PlasmoVoiceBlocker;
 
 import java.util.HashMap;
 import java.util.Map;

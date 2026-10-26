@@ -6,10 +6,14 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://maven.maxhenkel.de/repository/public") //СВЧ-печь XD XD XD
+    maven("https://repo.plasmoverse.com/releases") //PlasmoVoice
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.3.build.+")
+    implementation("de.maxhenkel.voicechat:voicechat-api:2.6.25")
+    compileOnly("su.plo.voice.api:server:2.2.0-beta.2")
 }
 
 java {

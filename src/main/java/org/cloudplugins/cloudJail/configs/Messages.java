@@ -28,7 +28,7 @@ public enum Messages {
     USAGE_DELETE("command.usage-delete", "{prefix}&cИспользование: /jailadmin delete <имя>"),
     USAGE_TELEPORT("command.usage-teleport", "{prefix}&cИспользование: /jailadmin teleport <имя>"),
 
-    JAIL_SUCCESS("jail.jail-success", "{prefix}&cИгроку &e%player%&c порвут очко в тюрьме &e%jail%&c!"),
+    JAIL_SUCCESS("jail.jail-success", "{prefix}&cИгроку &e%player%&c порвут туза в тюрьме &e%jail%&c!"),
     UNJAIL_SUCCESS("jail.unjail-success", "{prefix}&cИгрок &e%player%&c освобождён."),
     ALREADY_JAILED("jail.already-jailed", "{prefix}&cИгрок &e%player%&c уже отбывает срок под шконкой!"),
     TERM_ENDED("jail.term-ended", "{prefix}&aВаш срок в тюрьме закончен. Не нарушайте правила сервера &e[/rules]!"),

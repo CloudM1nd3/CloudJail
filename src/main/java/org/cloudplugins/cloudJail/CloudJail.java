@@ -8,6 +8,7 @@ import org.cloudplugins.cloudJail.database.Database;
 import org.cloudplugins.cloudJail.listeners.PlayerListener;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
+import org.cloudplugins.cloudJail.voice.VoiceIntegration;
 
 import java.io.File;
 
@@ -15,7 +16,14 @@ public final class CloudJail extends JavaPlugin {
     private static CloudJail instance;
     private Database db;
     private PlayerListener playerListener;
+    private VoiceIntegration voiceIntegration;
 
+
+    @Override
+    public void onLoad() {
+        voiceIntegration = new VoiceIntegration(this);
+        voiceIntegration.load(); //pv
+    }
 
     @Override
     public void onEnable() {
@@ -41,6 +49,7 @@ public final class CloudJail extends JavaPlugin {
         getCommand("jailinfo").setExecutor(new JailInfoCommand());
         playerListener = new PlayerListener();
         getServer().getPluginManager().registerEvents(playerListener, this);
+        voiceIntegration.enable(); //SVC nah
     }
 
     @Override

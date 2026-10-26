@@ -1,6 +1,7 @@
 offline-counting: false
 
-prohibition:
+deny:
+  voice-chat: true
   block-chat: true
   block-movement: false
   block-consume: false

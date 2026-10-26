@@ -37,7 +37,7 @@ jail:
   #  /jail и /unjail
   # -------------------------------------------------------------------------
   # Доступно: %player% - ник игрока, %jail% - название тюрьмы, %time% - срок (например "1ч 30м")
-  jail-success: '{prefix}&cИгроку &e%player%&c порвут очко в тюрьме &e%jail%&c!'
+  jail-success: '{prefix}&cИгроку &e%player%&c порвут туза в тюрьме &e%jail%&c!'
 
   # Доступно: %player%
   unjail-success: '{prefix}&cИгрок &e%player%&c освобождён.'

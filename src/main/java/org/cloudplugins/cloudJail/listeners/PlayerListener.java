@@ -23,6 +23,7 @@ import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.Jail;
 import org.cloudplugins.cloudJail.objects.Punishment;
 import org.cloudplugins.cloudJail.utils.ColorService;
+import org.cloudplugins.cloudJail.voice.VoiceIntegration;
 
 import java.util.List;
 
@@ -44,6 +45,7 @@ public class PlayerListener implements Listener {
         blockCommands = Config.getBoolean("deny.commands", true);
         allowedCommands = Config.getStringList("deny.allowed-commands")
                 .stream().map(String::toLowerCase).toList();
+        VoiceIntegration.setBlockVoiceChat(Config.getBoolean("deny.voice-chat", true));
     }
 
     private boolean isJailed(Player player) {
@@ -154,7 +156,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onConsume(PlayerItemConsumeEvent e) {
-        Bukkit.getLogger().info("Пытаюсь отменить" + blockConsume);
         if (!isJailed(e.getPlayer()) || !blockConsume) return;
         e.setCancelled(true);
         sendAB(e.getPlayer(), Messages.DENY_CONSUME);

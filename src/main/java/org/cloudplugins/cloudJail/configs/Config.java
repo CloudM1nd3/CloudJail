@@ -45,28 +45,31 @@ public class Config {
         boolean changed = false;
 
         if (!config.isSet("offline-calculation")) {
-            config.set("offline-calculation", "false");
+            config.set("offline-calculation", false);
             changed = true;
         }
         if (!config.isSet("deny.chat")) {
-            config.set("deny.chat", "true");
+            config.set("deny.chat", true);
             changed = true;
         }
         if (!config.isSet("deny.consume")) {
-            config.set("deny.consume", "false");
+            config.set("deny.consume", false);
             changed = true;
         }
         if (!config.isSet("deny.movement")) {
-            config.set("deny.movement", "false");
+            config.set("deny.movement", false);
+            changed = true;
+        }
+        if (!config.isSet("deny.voice-chat")) {
+            config.set("deny.voice-chat", true);
             changed = true;
         }
         if (!config.isSet("deny.commands")) {
-            config.set("deny.commands", "true");
+            config.set("deny.commands", true);
             changed = true;
         }
-        if (!config.isSet("deny.allowed-commands")){
-            List<String> allowedCmds = List.of("/rules", "/links");
-            config.set("deny.allowed-commands", allowedCmds);
+        if (!config.isSet("deny.allowed-commands")) {
+            config.set("deny.allowed-commands", List.of("/jailinfo", "/rules", "/links"));
             changed = true;
         }
 

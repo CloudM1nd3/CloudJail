@@ -45,7 +45,6 @@ public class JailAdminCommand implements CommandExecutor {
             JailManager.getInstance().reload();
             plugin.getPlayerListener().loadSettings();
             PunishmentManager.getInstance().loadSettings();
-
             Messages.RELOAD_SUCCESS.send(sender);
         } catch (Exception e) {
             Messages.RELOAD_FAILED.send(sender);
