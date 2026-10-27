@@ -1,7 +1,6 @@
 package org.cloudplugins.cloudJail.listeners;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,7 +22,7 @@ import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.Jail;
 import org.cloudplugins.cloudJail.objects.Punishment;
 import org.cloudplugins.cloudJail.utils.ColorService;
-import org.cloudplugins.cloudJail.voice.VoiceIntegration;
+import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
 
 import java.util.List;
 
@@ -207,7 +206,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent e) {
-        if (!isJailed(e.getPlayer()) || !blockCommands) return;
+        if (!isJailed(e.getPlayer()) || !blockCommands || e.getPlayer().hasPermission("cloudJail.admin")) return;
 
         String msg = e.getMessage().toLowerCase();
 

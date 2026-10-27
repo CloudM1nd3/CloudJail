@@ -1,4 +1,6 @@
-offline-counting: false
+isOfflineProgressEnabled: false
+
+isAFKProgressEnabled: false
 
 deny:
   voice-chat: true

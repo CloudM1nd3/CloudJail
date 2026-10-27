@@ -1,14 +1,17 @@
 package org.cloudplugins.cloudJail;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cloudplugins.cloudJail.commands.*;
 import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.database.Database;
+import org.cloudplugins.cloudJail.integrations.essentials.EssentialsIntegration;
+import org.cloudplugins.cloudJail.integrations.voice.mods.SVCBlocker;
 import org.cloudplugins.cloudJail.listeners.PlayerListener;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
-import org.cloudplugins.cloudJail.voice.VoiceIntegration;
+import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
 
 import java.io.File;
 
@@ -17,7 +20,7 @@ public final class CloudJail extends JavaPlugin {
     private Database db;
     private PlayerListener playerListener;
     private VoiceIntegration voiceIntegration;
-
+    private EssentialsIntegration essentialsIntegration;
 
     @Override
     public void onLoad() {
@@ -49,7 +52,15 @@ public final class CloudJail extends JavaPlugin {
         getCommand("jailinfo").setExecutor(new JailInfoCommand());
         playerListener = new PlayerListener();
         getServer().getPluginManager().registerEvents(playerListener, this);
+
+
         voiceIntegration.enable(); //SVC nah
+
+        if (getServer().getPluginManager().isPluginEnabled("Essentials")) { //essentials nah
+            EssentialsIntegration ess = new EssentialsIntegration();
+            if (ess.hook()) essentialsIntegration = ess;
+        }
+
     }
 
     @Override
@@ -61,6 +72,10 @@ public final class CloudJail extends JavaPlugin {
             db.close();
         }
         instance = null;
+    }
+
+    public EssentialsIntegration getEssentials() {
+        return essentialsIntegration;
     }
 
     public PlayerListener getPlayerListener() {

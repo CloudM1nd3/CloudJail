@@ -8,10 +8,10 @@ import org.cloudplugins.cloudJail.CloudJail;
 import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.database.Database;
+import org.cloudplugins.cloudJail.integrations.essentials.EssentialsIntegration;
 import org.cloudplugins.cloudJail.objects.HistoryPage;
 import org.cloudplugins.cloudJail.objects.Jail;
 import org.cloudplugins.cloudJail.objects.Punishment;
-import org.cloudplugins.cloudJail.voice.mods.PlasmoVoiceBlocker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,8 @@ public class PunishmentManager {
     private static PunishmentManager instance;
     private final CloudJail plugin;
     private final Database db;
-    private boolean offlineCounting;
+    private boolean isOfflineProgressEnabled;
+    private boolean isAFKProgressEnabled;
 
     private final Map<UUID, Location> pendingReturns = new HashMap<>();
     private final Map<UUID, Punishment> activePunishments = new ConcurrentHashMap<>();
@@ -48,15 +49,17 @@ public class PunishmentManager {
     }
 
     public void loadSettings() {
-        boolean old = offlineCounting;
-        offlineCounting = Config.getBoolean("offline-counting", false);
+        // Проверка на некорректный подсчёт из-за милисекунд (мб похуй)
+        isAFKProgressEnabled = Config.getBoolean("isAFKProgressEnabled", false);
 
-        if (old == offlineCounting) return;
+        boolean oldOfflineProgress = isOfflineProgressEnabled;
+        isOfflineProgressEnabled = Config.getBoolean("isOfflineProgressEnabled", false);
+        if (oldOfflineProgress == isOfflineProgressEnabled) return;
 
         for (Punishment p : activePunishments.values()) {
-            if (Bukkit.getPlayer(p.getPlayerUUID()) != null) continue;
+            if (Bukkit.getPlayer(p.getPlayerUUID()) != null) return;
 
-            if (offlineCounting) {
+            if (isOfflineProgressEnabled) {
                 p.updateExpectedEnd();
             } else {
                 p.updateRemainingTime();
@@ -85,7 +88,7 @@ public class PunishmentManager {
         Punishment p = activePunishments.get(uuid);
         if (p == null) return;
 
-        if (!offlineCounting) p.updateExpectedEnd();
+        if (!isOfflineProgressEnabled) p.updateExpectedEnd();
 
         if (p.isExpired(System.currentTimeMillis())) {
             release(p, Punishment.Status.EXPIRED);
@@ -104,7 +107,7 @@ public class PunishmentManager {
         Punishment p = activePunishments.get(player.getUniqueId());
         if (p == null) return;
 
-        if (!offlineCounting) {
+        if (!isOfflineProgressEnabled) {
             p.updateRemainingTime();
             db.updateRemaining(p.getPlayerUUID(), p.getRemainingTime());
         }
@@ -113,19 +116,25 @@ public class PunishmentManager {
     public void saveAll() {
         for (Punishment p : activePunishments.values()) {
             boolean online = Bukkit.getPlayer(p.getPlayerUUID()) != null;
-            if (online || offlineCounting) {
+            if (online || isOfflineProgressEnabled) {
                 p.updateRemainingTime();
             }
             db.updateRemaining(p.getPlayerUUID(), p.getRemainingTime());
         }
     }
 
-    private void startTimer() {
+    private void startTimer() {;
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             long now = System.currentTimeMillis();
+
             for (Punishment p : activePunishments.values()) {
-                boolean online = Bukkit.getPlayer(p.getPlayerUUID()) != null;
-                if (!online && !offlineCounting) continue;
+                Player player = Bukkit.getPlayer(p.getPlayerUUID());
+                if (player == null && !isOfflineProgressEnabled) continue;
+
+                if (!isAFKProgressEnabled && player != null && plugin.getEssentials().isAfk(player)) {
+                    p.extend(1000);
+                    continue;
+                }
 
                 if (p.isExpired(now)) {
                     release(p, Punishment.Status.EXPIRED);

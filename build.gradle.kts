@@ -8,12 +8,16 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://maven.maxhenkel.de/repository/public") //СВЧ-печь XD XD XD
     maven("https://repo.plasmoverse.com/releases") //PlasmoVoice
+    maven("https://repo.essentialsx.net/releases/") {
+        name = "essentialsx-releases"
+    } //EssentialsX-API
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.3.build.+")
     implementation("de.maxhenkel.voicechat:voicechat-api:2.6.25")
     compileOnly("su.plo.voice.api:server:2.2.0-beta.2")
+    compileOnly("net.essentialsx:EssentialsX:2.21.2")
 }
 
 java {

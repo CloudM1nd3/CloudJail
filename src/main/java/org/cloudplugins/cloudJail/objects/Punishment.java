@@ -59,6 +59,10 @@ public class Punishment {
         return now >= expectedEnd;
     }
 
+    public void extend(long millis) {
+        expectedEnd += millis;
+    }
+
     public void updateExpectedEnd(){
         expectedEnd = System.currentTimeMillis() + remainingTime;
     }

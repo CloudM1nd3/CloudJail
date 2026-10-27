@@ -75,7 +75,7 @@ public class JailHistoryCommand implements CommandExecutor {
 
                 if (p == active) {
                     boolean online = Bukkit.getPlayer(p.getPlayerUUID()) != null;
-                    if (online || Config.getBoolean("offline-counting", false)) {
+                    if (online || Config.getBoolean("isOfflineProgressEnabled", false)) {
                         p.updateRemainingTime();
                     }
                     remainingTime = Messages.HISTORY_REMAINING_TIME.get(

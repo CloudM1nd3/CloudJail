@@ -1,7 +1,7 @@
-package org.cloudplugins.cloudJail.voice.mods;
+package org.cloudplugins.cloudJail.integrations.voice.mods;
 
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
-import org.cloudplugins.cloudJail.voice.VoiceIntegration;
+import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
 import su.plo.voice.api.addon.AddonInitializer;
 import su.plo.voice.api.addon.InjectPlasmoVoice;
 import su.plo.voice.api.addon.annotation.Addon;

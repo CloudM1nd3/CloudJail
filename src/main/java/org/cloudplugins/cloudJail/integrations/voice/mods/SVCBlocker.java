@@ -1,4 +1,4 @@
-package org.cloudplugins.cloudJail.voice.mods;
+package org.cloudplugins.cloudJail.integrations.voice.mods;
 
 import de.maxhenkel.voicechat.api.BukkitVoicechatService;
 import de.maxhenkel.voicechat.api.VoicechatPlugin;
@@ -7,7 +7,7 @@ import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
 import de.maxhenkel.voicechat.api.VoicechatConnection;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
-import org.cloudplugins.cloudJail.voice.VoiceIntegration;
+import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
 
 public class SVCBlocker implements VoicechatPlugin {
 
