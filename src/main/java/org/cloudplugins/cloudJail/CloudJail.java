@@ -12,8 +12,10 @@ import org.cloudplugins.cloudJail.listeners.PlayerListener;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
+import org.cloudplugins.cloudJail.tabcompleter.JailTabCompleter;
 
 import java.io.File;
+import java.util.List;
 
 public final class CloudJail extends JavaPlugin {
     private static CloudJail instance;
@@ -21,6 +23,7 @@ public final class CloudJail extends JavaPlugin {
     private PlayerListener playerListener;
     private VoiceIntegration voiceIntegration;
     private EssentialsIntegration essentialsIntegration;
+    private JailTabCompleter tabCompleter;
 
     @Override
     public void onLoad() {
@@ -50,9 +53,14 @@ public final class CloudJail extends JavaPlugin {
         getCommand("unjail").setExecutor(new UnjailCommand());
         getCommand("jailhistory").setExecutor(new JailHistoryCommand());
         getCommand("jailinfo").setExecutor(new JailInfoCommand());
+
+        tabCompleter = new JailTabCompleter();
+        for (String name : List.of("jail", "unjail", "jailhistory", "jailinfo", "jailadmin")) {
+            getCommand(name).setTabCompleter(tabCompleter);
+        }
+
         playerListener = new PlayerListener();
         getServer().getPluginManager().registerEvents(playerListener, this);
-
 
         voiceIntegration.enable(); //SVC nah
 

@@ -8,6 +8,8 @@ import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.objects.Jail;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public class JailManager {
@@ -36,12 +38,12 @@ public class JailManager {
         jailHashMap.put(name.toLowerCase(), jail);
     }
 
-    private void removeJail(String name){
-        jailHashMap.remove(name.toLowerCase());
-    }
-
     public Jail getJailByName(String name){
         return jailHashMap.get(name.toLowerCase());
+    }
+
+    public List<String> getJailNames(){
+        return jailHashMap.keySet().stream().toList();
     }
 
     public boolean hasJail(String name){
