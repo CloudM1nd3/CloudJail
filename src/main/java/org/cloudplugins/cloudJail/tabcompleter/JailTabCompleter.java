@@ -26,9 +26,9 @@ public class JailTabCompleter implements TabCompleter {
                 if (args.length == 1) {
                     return filter(getOnlinePlayers(), args[0]);
                 } else if (args.length == 2) {
-                    return filter(JailManager.getInstance().getJailNames(), args[2]);
+                    return filter(JailManager.getInstance().getJailNames(), args[1]);
                 } else if (args.length == 3) {
-                    return filter(TIMES, args[1]);
+                    return filter(TIMES, args[2]);
                 }
                 return Collections.emptyList();
             }
