@@ -35,6 +35,10 @@ public enum Messages {
     SET_RELEASED("jail.set-released", "{prefix}&aВас выпустили из тюрьмы. Не нарушайте правила сервера &e[/rules]!"),
     SET_JAILED("jail.set-jailed", "{prefix}&cВас посадили в тюрягу. Узнать срок, причину можно в скорборде справа или по &e[/jailinfo]"),
 
+    PLACEHOLDER_JAILED("PlaceHolderAPI.jailed", "Арестован"),
+    PLACEHOLDER_NOT_JAILED("PlaceHolderAPI.not_jailed", "На свободе"),
+    PLACEHOLDER_REMAINING("PlaceHolderAPI.remaining", "Оставшееся время: %time%"),
+
     NOT_JAILED("jail.not-jailed", "{prefix}&e%player% &cне отбывает срок."),
     NO_REASON("jail.no-reason", "Потому что я могу!"),
     INVALID_TIME("jail.invalid-time", "{prefix}&cНеверный формат времени. Примеры: &e30s&c, &e90m&c, &e1h30m&c, &e2d&c."),

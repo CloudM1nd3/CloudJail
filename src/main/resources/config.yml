@@ -8,6 +8,12 @@ isAFKProgressEnabled: false
 #Время для автосейва в БД (Default = 10min / 600 sec), 0 = без автосейва B)
 autosave: 600
 
+PlaceHolderAPI:
+  jailed: 'Арестован'
+  not_jailed: 'На свободе'
+  #%time% - отформатированное время, например (1ч 10м)
+  remaining: 'Оставшееся время: %time%'
+
 # Скорборд справа.
 # После освобождения возвращается предыдущий скорборд игрока.
 # Плейсхолдеры: %punisher%, %reason%, %time%, %remaining%, %jail% %player%

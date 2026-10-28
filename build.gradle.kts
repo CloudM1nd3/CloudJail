@@ -11,6 +11,7 @@ repositories {
     maven("https://repo.essentialsx.net/releases/") {
         name = "essentialsx-releases"
     } //EssentialsX-API
+    maven ("https://repo.extendedclip.com/releases/") // PAPI
 }
 
 dependencies {
@@ -18,6 +19,7 @@ dependencies {
     implementation("de.maxhenkel.voicechat:voicechat-api:2.6.25")
     compileOnly("su.plo.voice.api:server:2.2.0-beta.2")
     compileOnly("net.essentialsx:EssentialsX:2.21.2")
+    compileOnly("me.clip:placeholderapi:2.12.3")
 }
 
 java {

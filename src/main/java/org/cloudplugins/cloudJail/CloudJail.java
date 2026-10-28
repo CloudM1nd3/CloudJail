@@ -7,7 +7,7 @@ import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.database.Database;
 import org.cloudplugins.cloudJail.integrations.essentials.EssentialsIntegration;
-import org.cloudplugins.cloudJail.integrations.voice.mods.SVCBlocker;
+import org.cloudplugins.cloudJail.integrations.placeholderapi.PlaceHolderApiHook;
 import org.cloudplugins.cloudJail.listeners.PlayerListener;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.JailScoreboardManager;
@@ -71,6 +71,13 @@ public final class CloudJail extends JavaPlugin {
             if (ess.hook()) essentialsIntegration = ess;
         }
 
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            PlaceHolderApiHook hook = new PlaceHolderApiHook(this, PunishmentManager.getInstance());
+            hook.register();
+            Bukkit.getLogger().info("[CloudJail] PAPI успешно подключён!");
+        } else {
+            Bukkit.getLogger().info("[CloudJail] PAPI не подключён, без плейсхолдеров сегодня :(");
+        }
     }
 
     @Override
