@@ -5,7 +5,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.cloudplugins.cloudJail.configs.Messages;
-import org.cloudplugins.cloudJail.listeners.PlayerListener;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.Punishment;
 import org.cloudplugins.cloudJail.utils.TimeParser;
@@ -23,14 +22,12 @@ public class JailInfoCommand implements CommandExecutor {
             return true;
         }
 
-        p.updateRemainingTime();
-
         Messages.INFO_LINES.sendList(player,
                 "%jail%", p.getJailName(),
                 "%punisher%", p.getPunisher(),
                 "%reason%", String.valueOf(p.getReason()),
                 "%time%", TimeParser.format(p.getDuration()),
-                "%remaining%", TimeParser.format(p.getRemainingTime()));
+                "%remaining%", TimeParser.format(p.getRemainingMillis()));
         return true;
     }
 }

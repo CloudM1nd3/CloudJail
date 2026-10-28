@@ -10,6 +10,7 @@ import org.cloudplugins.cloudJail.integrations.essentials.EssentialsIntegration;
 import org.cloudplugins.cloudJail.integrations.voice.mods.SVCBlocker;
 import org.cloudplugins.cloudJail.listeners.PlayerListener;
 import org.cloudplugins.cloudJail.managers.JailManager;
+import org.cloudplugins.cloudJail.managers.JailScoreboardManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
 import org.cloudplugins.cloudJail.tabcompleter.JailTabCompleter;
@@ -41,6 +42,7 @@ public final class CloudJail extends JavaPlugin {
             db = new Database(new File(getDataFolder(), "punishments.db"));
             JailManager.init(this);
             PunishmentManager.init(this, db);
+            JailScoreboardManager.init();
         } catch (Exception e) {
             getLogger().severe("Error starting plugin: " + e.getMessage());
             e.printStackTrace();
@@ -73,6 +75,9 @@ public final class CloudJail extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        if (JailScoreboardManager.getInstance() != null) {
+            JailScoreboardManager.getInstance().hideAll();
+        }
         if (PunishmentManager.getInstance() != null) {
             PunishmentManager.getInstance().saveAll();
         }

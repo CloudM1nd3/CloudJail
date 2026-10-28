@@ -52,6 +52,10 @@ public class Config {
             config.set("isAFKProgressEnabled", false);
             changed = true;
         }
+        if (!config.isSet("autosave")) {
+            config.set("autosave", 600);
+            changed = true;
+        }
 
         if (!config.isSet("deny.chat")) {
             config.set("deny.chat", true);
@@ -77,6 +81,26 @@ public class Config {
             config.set("deny.allowed-commands", List.of("/jailinfo", "/rules", "/links"));
             changed = true;
         }
+        if (!config.isSet("scoreboard.enable")) {
+            config.set("scoreboard.enable", true);
+            changed = true;
+        }
+        if (!config.isSet("scoreboard.title")) {
+            config.set("scoreboard.title", "&6&lТюрьма");
+            changed = true;
+        }
+        if (!config.isSet("scoreboard.lines")) {
+            config.set("scoreboard.lines", List.of(
+                    "&7&m----------------",
+                    "&fМодератор: &e%moder%",
+                    "&fПричина: &e%reason%",
+                    "",
+                    "&fСрок: &6%time%",
+                    "&fОсталось: &a%remaining%",
+                    "&7&m----------------"
+            ));
+            changed = true;
+        }
 
         return changed;
     }
@@ -99,8 +123,17 @@ public class Config {
         save();
     }
 
-    public static boolean getBoolean(String path, boolean defaltValue) {
-        return config.getBoolean(path, defaltValue);
+    public static boolean getBoolean(String path, boolean defaultValue) {
+        return config.getBoolean(path, defaultValue);
+    }
+
+    public static int getInt(String path, int defaultValue) {
+        return config.getInt(path, defaultValue);
+    }
+
+    public static String getString(String path, String defaultValue) {
+        String value = config.getString(path, defaultValue);
+        return value == null ? defaultValue : value;
     }
 
     public static List<String> getStringList(String path) {

@@ -72,14 +72,9 @@ public class JailHistoryCommand implements CommandExecutor {
 
             for (Punishment p : toShow) {
                 String remainingTime = "";
-
                 if (p == active) {
-                    boolean online = Bukkit.getPlayer(p.getPlayerUUID()) != null;
-                    if (online || Config.getBoolean("isOfflineProgressEnabled", false)) {
-                        p.updateRemainingTime();
-                    }
                     remainingTime = Messages.HISTORY_REMAINING_TIME.get(
-                            "%time%", TimeParser.format(p.getRemainingTime()));
+                            "%time%", TimeParser.format(p.getRemainingMillis()));
                 }
 
                 Messages.HISTORY_LINES.sendList(sender,

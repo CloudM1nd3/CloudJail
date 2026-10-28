@@ -12,10 +12,9 @@ public class Punishment {
     private final String jailName;
     private final String punisher;
     private final String reason;
-    private final long startTime; //БД
-    private final long duration; //БД
-    private long remainingTime;
-    private long expectedEnd;
+    private final long startTime;
+    private final long duration;
+    private long remainingMillis;
     private Status status;
     private Location lastLocation;
     private boolean pendingTeleport;
@@ -28,7 +27,7 @@ public class Punishment {
 
     //Конструктор для существующих записей, ID из базы + RemainingTime
     public Punishment(int id, UUID playerUUID, String playerName, String jailName, String punisher, String reason,
-                      long startTime, long duration, long remainingTime, Status status, Location lastLocation) {
+                      long startTime, long duration, long remainingMillis, Status status, Location lastLocation) {
         this.id = id;
         this.playerUUID = playerUUID;
         this.playerName = playerName;
@@ -37,8 +36,7 @@ public class Punishment {
         this.reason = reason;
         this.startTime = startTime;
         this.duration = duration;
-        this.remainingTime = remainingTime;
-        this.expectedEnd = System.currentTimeMillis() + remainingTime;
+        this.remainingMillis = remainingMillis;
         this.status = status;
         this.lastLocation = lastLocation;
     }
@@ -51,24 +49,21 @@ public class Punishment {
         this.pendingTeleport = status;
     }
 
-    public long getRemainingTime() {
-        return remainingTime;
+    public long getRemainingMillis() {
+        return remainingMillis;
     }
 
-    public boolean isExpired(Long now) {
-        return now >= expectedEnd;
+    public void add(long millis) {
+        remainingMillis += millis;
     }
 
-    public void extend(long millis) {
-        expectedEnd += millis;
+    public boolean tick(long ticks) {
+        remainingMillis = Math.max(0, remainingMillis - ticks);
+        return remainingMillis == 0;
     }
 
-    public void updateExpectedEnd(){
-        expectedEnd = System.currentTimeMillis() + remainingTime;
-    }
-
-    public void updateRemainingTime() {
-        remainingTime = Math.max(0, expectedEnd - System.currentTimeMillis());
+    public boolean isExpired() {
+        return remainingMillis <= 0;
     }
 
     public int getId() {

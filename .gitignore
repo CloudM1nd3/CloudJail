@@ -45,6 +45,10 @@
 # *.iml
 # *.ipr
 
+#sqlite
+*.sqlite
+
+
 # CMake
 cmake-build-*/
 

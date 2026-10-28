@@ -35,7 +35,7 @@ public class Database {
                     "reason TEXT, " +
                     "start_time INTEGER NOT NULL, " +
                     "duration INTEGER NOT NULL, " +
-                    "remainingTime INTEGER NOT NULL, " +
+                    "remainingMillis INTEGER NOT NULL, " +
                     "status TEXT NOT NULL, " +
                     "pending_teleport INTEGER NOT NULL DEFAULT 0)");
 
@@ -87,11 +87,11 @@ public class Database {
         });
     }
 
-    public void updateRemaining(UUID uuid, long remainingTime) {
+    public void updateRemaining(UUID uuid, long remainingMillis) {
         executor.execute(() -> {
             try (PreparedStatement ps = connection.prepareStatement(
-                    "UPDATE punishments SET remainingTime = ? WHERE player_uuid = ? AND status = 'ACTIVE'")) {
-                ps.setLong(1, remainingTime);
+                    "UPDATE punishments SET remainingMillis = ? WHERE player_uuid = ? AND status = 'ACTIVE'")) {
+                ps.setLong(1, remainingMillis);
                 ps.setString(2, uuid.toString());
                 ps.executeUpdate();
             } catch (SQLException e) {
@@ -180,7 +180,7 @@ public class Database {
 
     private void insert(Punishment p) {
         String sql = "INSERT INTO punishments (player_uuid, player_name, jail_name, punisher, reason, " +
-                "start_time, duration, remainingTime, status, pending_teleport) VALUES (?,?,?,?,?,?,?,?,?,?)";
+                "start_time, duration, remainingMillis, status, pending_teleport) VALUES (?,?,?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, p.getPlayerUUID().toString());
             ps.setString(2, p.getPlayerName());
@@ -189,7 +189,7 @@ public class Database {
             ps.setString(5, p.getReason());
             ps.setLong(6, p.getStartTime());
             ps.setLong(7, p.getDuration());
-            ps.setLong(8, p.getRemainingTime());
+            ps.setLong(8, p.getRemainingMillis());
             ps.setString(9, p.getStatus().name());
             ps.setInt(10, p.getPendingTeleport() ? 1 : 0);
             ps.executeUpdate();
@@ -264,7 +264,7 @@ public class Database {
                 rs.getString("reason"),
                 rs.getLong("start_time"),
                 rs.getLong("duration"),
-                rs.getLong("remainingTime"),
+                rs.getLong("remainingMillis"),
                 status,
                 last);
         p.setPendingTeleport(rs.getInt("pending_teleport") == 1);
