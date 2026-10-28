@@ -40,17 +40,17 @@
 | `cloudjail.history` | История |
 | `cloudJail.admin` | Управление тюрьмами и reload |
 
+## Интеграции
+- **PlaceHolderAPI** - Настраиваемые плейсхолдеры 
+- **Simple Voice Chat** / **PlasmoVoice** — блокировка голосового чата
+- **EssentialsX** — учёт AFK
+
 ## PlaceholderAPI
 
 | Плейсхолдер | Описание |
 |-------------|----------|
 | `%cloudjail_jailed%` | В тюрьме или нет |
 | `%cloudjail_remaining%` | Оставшееся время |
-
-## Интеграции
-
-- **Simple Voice Chat** / **PlasmoVoice** — блокировка голосового чата
-- **EssentialsX** — учёт AFK
 
 ## Сборка
 
