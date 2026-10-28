@@ -204,6 +204,15 @@ public class PlayerListener implements Listener {
         sendAB(e.getPlayer(), Messages.DENY_CHAT);
     }
 
+    //В случае, если плагин на чат работает с устаревшим ивентом.
+    @SuppressWarnings("deprecation")
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onLegacyChat(AsyncPlayerChatEvent e) {
+        if (!isJailed(e.getPlayer()) || !blockChat) return;
+        e.setCancelled(true);
+        sendAB(e.getPlayer(), Messages.DENY_CHAT);
+    }
+
     @EventHandler(ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent e) {
         if (!isJailed(e.getPlayer()) || !blockCommands || e.getPlayer().hasPermission("cloudJail.admin")) return;
