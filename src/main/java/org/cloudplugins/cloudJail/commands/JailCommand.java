@@ -45,6 +45,10 @@ public class JailCommand implements CommandExecutor {
         }
 
         long time = TimeParser.parse(args[2]);
+        if (time <= 0) {
+            Messages.INVALID_TIME.send(sender);
+            return true;
+        }
 
         String reason;
         if (args.length > 3) {
