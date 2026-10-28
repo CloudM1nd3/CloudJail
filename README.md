@@ -40,6 +40,13 @@
 | `cloudjail.history` | История |
 | `cloudJail.admin` | Управление тюрьмами и reload |
 
+## PlaceholderAPI
+
+| Плейсхолдер | Описание |
+|-------------|----------|
+| `%cloudjail_jailed%` | В тюрьме или нет |
+| `%cloudjail_remaining%` | Оставшееся время |
+
 ## Интеграции
 
 - **Simple Voice Chat** / **PlasmoVoice** — блокировка голосового чата
