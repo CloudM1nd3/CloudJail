@@ -73,12 +73,12 @@ public class Config {
             config.set("deny.voice-chat", true);
             changed = true;
         }
-        if (!config.isSet("deny.commands")) {
-            config.set("deny.commands", true);
+        if (!config.isSet("deny.commands.enable")) {
+            config.set("deny.commands.enable", true);
             changed = true;
         }
-        if (!config.isSet("deny.allowed-commands")) {
-            config.set("deny.allowed-commands", List.of("/jailinfo", "/rules", "/links"));
+        if (!config.isSet("deny.commands.allowed-commands")) {
+            config.set("deny.commands.allowed-commands", List.of("/jailinfo", "/rules", "/links"));
             changed = true;
         }
         if (!config.isSet("scoreboard.enable")) {

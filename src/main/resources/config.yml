@@ -41,22 +41,22 @@ deny:
   voice-chat: true
 
   # Запретить писать в чат
-  block-chat: true
+  chat: true
 
   # Запретить перемещаться (поворачивать голову можно)
-  block-movement: false
+  movement: false
 
   # Запретить есть и пить (LOL)
-  block-consume: false
+  consume: false
 
   # Запретить команды, кроме перечисленных в allowed-commands
-  block-commands: true
-
-  # Команды, разрешённые в тюрьме (пишутся со слэшем, в нижнем регистре)
-  allowed-commands:
-    - /rules
-    - /links
-    - /jailinfo
+  commands:
+    enable: true
+    # Команды, разрешённые в тюрьме (пишутся со слэшем, в нижнем регистре)
+    allowed-commands:
+      - /rules
+      - /links
+      - /jailinfo
 
 #Список тюрем, заполняется командами плагина автоматически, менять тут что-то вручную смысла нет B)
 Jails: []

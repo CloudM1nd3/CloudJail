@@ -41,8 +41,8 @@ public class PlayerListener implements Listener {
         blockChat = Config.getBoolean("deny.chat", true);
         blockMovement = Config.getBoolean("deny.movement", false);
         blockConsume = Config.getBoolean("deny.consume", false);
-        blockCommands = Config.getBoolean("deny.commands", true);
-        allowedCommands = Config.getStringList("deny.allowed-commands")
+        blockCommands = Config.getBoolean("deny.commands.enable", true);
+        allowedCommands = Config.getStringList("deny.commands.allowed-commands")
                 .stream().map(String::toLowerCase).toList();
         VoiceIntegration.setBlockVoiceChat(Config.getBoolean("deny.voice-chat", true));
     }
