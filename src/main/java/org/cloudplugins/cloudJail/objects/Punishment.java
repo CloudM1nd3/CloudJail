@@ -6,7 +6,7 @@ import java.util.UUID;
 public class Punishment {
     public enum Status { ACTIVE, EXPIRED, RELEASED }
 
-    private final int id;
+    private int id;
     private final UUID playerUUID;
     private final String playerName;
     private final String jailName;
@@ -19,16 +19,10 @@ public class Punishment {
     private Location lastLocation;
     private boolean pendingTeleport;
 
-    //Конструктор для новых записей (Id = -1)
-    public Punishment(UUID playerUUID, String playerName, String jailName, String punisher, String reason,
-                      long startTime, long duration, Status status, Location lastLocation) {
-        this(-1, playerUUID, playerName, jailName, punisher, reason, startTime, duration, duration, status, lastLocation);
-    }
 
-    //Конструктор для существующих записей, ID из базы + RemainingTime
-    public Punishment(int id, UUID playerUUID, String playerName, String jailName, String punisher, String reason,
+    //Для новых записей remaining = duration, id определяется после создания объекта, дополнительным запросом
+    public Punishment(UUID playerUUID, String playerName, String jailName, String punisher, String reason,
                       long startTime, long duration, long remainingMillis, Status status, Location lastLocation) {
-        this.id = id;
         this.playerUUID = playerUUID;
         this.playerName = playerName;
         this.jailName = jailName;
@@ -55,6 +49,10 @@ public class Punishment {
 
     public void add(long millis) {
         remainingMillis += millis;
+    }
+
+    public void setId(int id){
+        this.id = id;
     }
 
     public boolean tick(long ticks) {

@@ -171,7 +171,7 @@ public class PunishmentManager {
 
         long now = System.currentTimeMillis();
         Punishment p = new Punishment(uuid, player.getName(), jailName, punisher, reason,
-                now, durationMillis, Punishment.Status.ACTIVE, player.getLocation());
+                now, durationMillis, durationMillis, Punishment.Status.ACTIVE, player.getLocation());
 
         Player online = player.getPlayer();
         if (online == null) {

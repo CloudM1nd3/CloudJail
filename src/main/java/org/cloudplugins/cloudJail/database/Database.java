@@ -193,6 +193,12 @@ public class Database {
             ps.setString(9, p.getStatus().name());
             ps.setInt(10, p.getPendingTeleport() ? 1 : 0);
             ps.executeUpdate();
+
+            try (ResultSet keys = ps.getGeneratedKeys()) {
+                if (keys.next()) {
+                    p.setId(keys.getInt(1));
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -256,7 +262,6 @@ public class Database {
         Location last = status == Punishment.Status.ACTIVE ? loadLastLocation(playerUUID) : null;
 
         Punishment p = new Punishment(
-                rs.getInt("id"),
                 playerUUID,
                 rs.getString("player_name"),
                 rs.getString("jail_name"),
@@ -267,6 +272,7 @@ public class Database {
                 rs.getLong("remainingMillis"),
                 status,
                 last);
+        p.setId(rs.getInt("id"));
         p.setPendingTeleport(rs.getInt("pending_teleport") == 1);
         return p;
     }
