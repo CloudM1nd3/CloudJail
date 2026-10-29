@@ -29,7 +29,7 @@
 | `/jailadmin tp <имя>` | Телепорт к тюрьме | `cloudJail.admin` |
 | `/jailadmin reload` | Перезагрузить конфиг | `cloudJail.admin` |
 
-Алиасы: `/ja`, `/jailhist`, `/jinfo`
+Алиасы: `/ja`, `/jailhist`, `/jailpunish`, `/jinfo`
 
 ## Права
 
