@@ -22,6 +22,7 @@
 | `/jail <ник> <тюрьма> <время> [причина]` | Посадить игрока | `cloudjail.jail` |
 | `/unjail <ник>` | Освободить игрока | `cloudjail.unjail` |
 | `/jailhistory <ник> [страница]` | История наказаний | `cloudjail.history` |
+| `/jailpunishments <ник> [страница]` | История выданных наказаний | `cloudjail.history` |
 | `/jailinfo` | Информация о своём наказании | — |
 | `/jailadmin create <имя> [-n]` | Создать тюрьму | `cloudJail.admin` |
 | `/jailadmin delete <имя>` | Удалить тюрьму | `cloudJail.admin` |
@@ -34,9 +35,9 @@
 
 | Право | Описание |
 |-------|----------|
-| `cloudjail.jail` | Посадка |
+| `cloudjail.jail` | Посадка в тюрьму |
 | `cloudjail.unjail` | Освобождение |
-| `cloudjail.history` | История |
+| `cloudjail.history` | История наказаний |
 | `cloudJail.admin` | Управление тюрьмами и reload |
 
 ## Интеграции
