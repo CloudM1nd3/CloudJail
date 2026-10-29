@@ -12,6 +12,7 @@ import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.utils.TimeParser;
 
 import java.util.Arrays;
+import java.util.UUID;
 
 public class JailCommand implements CommandExecutor {
 
@@ -58,10 +59,13 @@ public class JailCommand implements CommandExecutor {
             reason = Messages.NO_REASON.get();
         }
 
+        UUID punisherUUID = sender instanceof Player ? player.getUniqueId() : null;
+
         PunishmentManager.getInstance().jail(
                 player,
                 jailName,
                 sender.getName(),
+                punisherUUID,
                 time,
                 reason
         );

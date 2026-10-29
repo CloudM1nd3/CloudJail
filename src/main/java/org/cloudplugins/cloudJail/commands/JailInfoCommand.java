@@ -24,7 +24,7 @@ public class JailInfoCommand implements CommandExecutor {
 
         Messages.INFO_LINES.sendList(player,
                 "%jail%", p.getJailName(),
-                "%punisher%", p.getPunisher(),
+                "%punisher%", p.getPunisherName(),
                 "%reason%", String.valueOf(p.getReason()),
                 "%time%", TimeParser.format(p.getDuration()),
                 "%remaining%", TimeParser.format(p.getRemainingMillis()));

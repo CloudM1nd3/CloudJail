@@ -159,7 +159,7 @@ public class JailScoreboardManager {
         String reason = punishment.getReason() == null ? "" : punishment.getReason();
         String remaining = TimeParser.format(punishment.getRemainingMillis());
         return template
-                .replace("%punisher%", punishment.getPunisher())
+                .replace("%punisher%", punishment.getPunisherName())
                 .replace("%reason%", reason)
                 .replace("%time%", TimeParser.format(punishment.getDuration()))
                 .replace("%remaining%", remaining)

@@ -7,10 +7,11 @@ public class Punishment {
     public enum Status { ACTIVE, EXPIRED, RELEASED }
 
     private int id;
-    private final UUID playerUUID;
     private final String playerName;
+    private final UUID playerUUID;
+    private final String punisherName;
+    private final UUID punisherUUID;
     private final String jailName;
-    private final String punisher;
     private final String reason;
     private final long startTime;
     private final long duration;
@@ -19,14 +20,14 @@ public class Punishment {
     private Location lastLocation;
     private boolean pendingTeleport;
 
-
-    //Для новых записей remaining = duration, id определяется после создания объекта, дополнительным запросом
-    public Punishment(UUID playerUUID, String playerName, String jailName, String punisher, String reason,
+    //Для новых записей remaining = duration, id определяется после создания объекта дополнительным запросом
+    public Punishment(String playerName, UUID playerUUID, String punisherName, UUID punisherUUID, String jailName, String reason,
                       long startTime, long duration, long remainingMillis, Status status, Location lastLocation) {
-        this.playerUUID = playerUUID;
         this.playerName = playerName;
+        this.playerUUID = playerUUID;
+        this.punisherName = punisherName;
+        this.punisherUUID = punisherUUID;
         this.jailName = jailName;
-        this.punisher = punisher;
         this.reason = reason;
         this.startTime = startTime;
         this.duration = duration;
@@ -80,8 +81,12 @@ public class Punishment {
         return jailName;
     }
 
-    public String getPunisher() {
-        return punisher;
+    public String getPunisherName() {
+        return punisherName;
+    }
+
+    public UUID getPunisherUUID() {
+        return punisherUUID;
     }
 
     public String getReason() {
@@ -108,7 +113,4 @@ public class Punishment {
         return lastLocation;
     }
 
-    public void setLastLocation(Location lastLocation) {
-        this.lastLocation = lastLocation;
-    }
 }

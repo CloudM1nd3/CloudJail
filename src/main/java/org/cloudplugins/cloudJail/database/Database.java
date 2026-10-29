@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
-import org.cloudplugins.cloudJail.objects.HistoryPage;
+import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
 
 import java.io.File;
@@ -28,10 +28,11 @@ public class Database {
         try (Statement st = connection.createStatement()) {
             st.execute("CREATE TABLE IF NOT EXISTS punishments (" +
                     "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    "player TEXT NOT NULL, " +
                     "player_uuid TEXT NOT NULL, " +
-                    "player_name TEXT NOT NULL, " +
-                    "jail_name TEXT NOT NULL, " +
                     "punisher TEXT NOT NULL, " +
+                    "punisher_uuid TEXT, " +
+                    "jail_name TEXT NOT NULL, " +
                     "reason TEXT, " +
                     "start_time INTEGER NOT NULL, " +
                     "duration INTEGER NOT NULL, " +
@@ -41,7 +42,8 @@ public class Database {
 
             st.execute("CREATE TABLE IF NOT EXISTS last_locations (" +
                     "player_uuid TEXT PRIMARY KEY, " +
-                    "world_uuid TEXT, world_name TEXT, " +
+                    "world_uuid TEXT, " +
+                    "world_name TEXT, " +
                     "x REAL, y REAL, z REAL, yaw REAL, pitch REAL, " +
                     "pending_return INTEGER NOT NULL DEFAULT 0)");
 
@@ -132,7 +134,7 @@ public class Database {
         }, executor);
     }
 
-    public CompletableFuture<HistoryPage> loadHistory(UUID uuid, int page) {
+    public CompletableFuture<PageDisplay> loadHistory(UUID uuid, int page) {
         return CompletableFuture.supplyAsync(() -> {
             int total = 0;
             try (PreparedStatement ps = connection.prepareStatement(
@@ -161,9 +163,41 @@ public class Database {
 
             Punishment active = PunishmentManager.getInstance().getActivePunishment(uuid);
             int totalPages = Math.max(1, (total + 5 - 1) / 5);
-            return new HistoryPage(active, list, page, totalPages, total);
+            return new PageDisplay(active, list, totalPages, total);
         }, executor);
     }
+
+    public CompletableFuture<PageDisplay> loadPunishments(UUID uuid, int page) {
+        return CompletableFuture.supplyAsync(() -> {
+            int total = 0;
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "SELECT COUNT(*) FROM punishments WHERE punisher_uuid = ?")) {
+                ps.setString(1, uuid.toString());
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) total = rs.getInt(1);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+            List<Punishment> list = new ArrayList<>();
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "SELECT * FROM punishments WHERE punisher_uuid = ?" +
+                            "ORDER BY id DESC LIMIT ? OFFSET ?")) {
+                ps.setString(1, uuid.toString());
+                ps.setInt(2, 5);
+                ps.setInt(3, (page - 1) * 5);
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    list.add(readPunishment(rs));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            int totalPages = Math.max(1, (total + 5 - 1) / 5);
+            return new PageDisplay(list, totalPages, total);
+        }, executor);
+    }
+
 
     public void close() {
         executor.shutdown();
@@ -179,19 +213,20 @@ public class Database {
     }
 
     private void insert(Punishment p) {
-        String sql = "INSERT INTO punishments (player_uuid, player_name, jail_name, punisher, reason, " +
-                "start_time, duration, remainingMillis, status, pending_teleport) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO punishments (player, player_uuid, punisher, punisher_uuid, jail_name, reason, " +
+                "start_time, duration, remainingMillis, status, pending_teleport) VALUES (?,?,?,?,?,?,?,?,?,?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, p.getPlayerUUID().toString());
-            ps.setString(2, p.getPlayerName());
-            ps.setString(3, p.getJailName());
-            ps.setString(4, p.getPunisher());
-            ps.setString(5, p.getReason());
-            ps.setLong(6, p.getStartTime());
-            ps.setLong(7, p.getDuration());
-            ps.setLong(8, p.getRemainingMillis());
-            ps.setString(9, p.getStatus().name());
-            ps.setInt(10, p.getPendingTeleport() ? 1 : 0);
+            ps.setString(1, p.getPlayerName());
+            ps.setString(2, p.getPlayerUUID().toString());
+            ps.setString(3, p.getPunisherName());
+            ps.setString(4, p.getPunisherUUID() != null ? p.getPunisherUUID().toString() : "NULL");
+            ps.setString(5, p.getJailName());
+            ps.setString(6, p.getReason());
+            ps.setLong(7, p.getStartTime());
+            ps.setLong(8, p.getDuration());
+            ps.setLong(9, p.getRemainingMillis());
+            ps.setString(10, p.getStatus().name());
+            ps.setInt(11, p.getPendingTeleport() ? 1 : 0);
             ps.executeUpdate();
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
@@ -262,10 +297,11 @@ public class Database {
         Location last = status == Punishment.Status.ACTIVE ? loadLastLocation(playerUUID) : null;
 
         Punishment p = new Punishment(
+                rs.getString("player"),
                 playerUUID,
-                rs.getString("player_name"),
-                rs.getString("jail_name"),
                 rs.getString("punisher"),
+                rs.getString("punisher_uuid").equalsIgnoreCase("NULL") ? null : UUID.fromString(rs.getString("punisher_uuid")),
+                rs.getString("jail_name"),
                 rs.getString("reason"),
                 rs.getLong("start_time"),
                 rs.getLong("duration"),

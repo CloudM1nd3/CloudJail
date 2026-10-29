@@ -55,9 +55,11 @@ public final class CloudJail extends JavaPlugin {
         getCommand("unjail").setExecutor(new UnjailCommand());
         getCommand("jailhistory").setExecutor(new JailHistoryCommand());
         getCommand("jailinfo").setExecutor(new JailInfoCommand());
+        getCommand("jailpunishments").setExecutor(new JailPunishmentsCommand());
+
 
         tabCompleter = new JailTabCompleter();
-        for (String name : List.of("jail", "unjail", "jailhistory", "jailinfo", "jailadmin")) {
+        for (String name : List.of("jail", "unjail", "jailhistory", "jailpunishments" ,"jailinfo", "jailadmin")) {
             getCommand(name).setTabCompleter(tabCompleter);
         }
 

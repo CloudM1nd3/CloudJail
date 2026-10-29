@@ -16,8 +16,12 @@ commands:
     usage: /unjail <ник>
   jailhistory:
     description: История наказаний игрока
-    usage: /jailhistory <ник>
+    usage: /jailhistory <ник> [страница]
     aliases: [jailhist]
+  jailpunishments:
+    description: История выданных наказаний игроком
+    usage: /jailpunishments <ник> [страница]
+    aliases: [jailpunish]
   jailadmin:
     description: Управление тюрьмами
     usage: /jailadmin <create|delete|tp|reload>

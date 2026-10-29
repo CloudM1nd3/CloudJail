@@ -45,30 +45,30 @@ public class JailHistoryCommand implements CommandExecutor {
         final int page = Math.max(1, parsed);
 
         PunishmentManager.getInstance().getHistory(target.getUniqueId(), page, result -> {
-            Punishment active = result.active();
+            Punishment active = result.getActive();
 
-            if (result.total() == 0 && active == null) {
+            if (result.getTotal() == 0 && active == null) {
                 Messages.HISTORY_EMPTY.send(sender, "%player%", args[0]);
                 return;
             }
 
-            if (page > Math.max(1, result.totalPages())) {
+            if (page > Math.max(1, result.getTotalPages())) {
                 Messages.HISTORY_PAGE_INVALID.send(sender,
                         "%page%", String.valueOf(page),
-                        "%pages%", String.valueOf(Math.max(1, result.totalPages())));
+                        "%pages%", String.valueOf(Math.max(1, result.getTotalPages())));
                 return;
             }
 
             Messages.HISTORY_HEADER.send(sender,
                     "%player%", args[0],
                     "%page%", String.valueOf(page),
-                    "%pages%", String.valueOf(Math.max(1, result.totalPages())));
+                    "%pages%", String.valueOf(Math.max(1, result.getTotalPages())));
 
             List<Punishment> toShow = new ArrayList<>();
             if (page == 1 && active != null) {
                 toShow.add(active);
             }
-            toShow.addAll(result.entries());
+            toShow.addAll(result.getEntries());
 
             for (Punishment p : toShow) {
                 String remainingTime = "";
@@ -83,7 +83,7 @@ public class JailHistoryCommand implements CommandExecutor {
                         "%status%", p.getStatus().name(),
                         "%time%", TimeParser.format(p.getDuration()),
                         "%remaining%", remainingTime,
-                        "%punisher%", p.getPunisher(),
+                        "%punisher%", p.getPunisherName(),
                         "%reason%", String.valueOf(p.getReason()));
             }
         });

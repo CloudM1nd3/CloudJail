@@ -9,8 +9,8 @@ import org.cloudplugins.cloudJail.CloudJail;
 import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.database.Database;
-import org.cloudplugins.cloudJail.objects.HistoryPage;
 import org.cloudplugins.cloudJail.objects.Jail;
+import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
 
 import java.util.HashMap;
@@ -157,7 +157,7 @@ public class PunishmentManager {
         return activePunishments.get(uuid);
     }
 
-    public boolean jail(OfflinePlayer player, String jailName, String punisher,
+    public boolean jail(OfflinePlayer player, String jailName, String punisherName, UUID punisher_uuid,
                         long durationMillis, String reason) {
         UUID uuid = player.getUniqueId();
         if (activePunishments.containsKey(uuid)) {
@@ -170,7 +170,7 @@ public class PunishmentManager {
         }
 
         long now = System.currentTimeMillis();
-        Punishment p = new Punishment(uuid, player.getName(), jailName, punisher, reason,
+        Punishment p = new Punishment(player.getName(), uuid, punisherName, punisher_uuid, jailName, reason,
                 now, durationMillis, durationMillis, Punishment.Status.ACTIVE, player.getLocation());
 
         Player online = player.getPlayer();
@@ -227,8 +227,13 @@ public class PunishmentManager {
                 : Bukkit.getWorlds().getFirst().getSpawnLocation());
     }
 
-    public void getHistory(UUID uuid, int page, Consumer<HistoryPage> callback) {
+    public void getHistory(UUID uuid, int page, Consumer<PageDisplay> callback){
         db.loadHistory(uuid, page).thenAccept(result ->
                 Bukkit.getScheduler().runTask(plugin, () -> callback.accept(result)));
+    }
+
+    public void getPunishments(UUID uuid, int page, Consumer<PageDisplay> callback){
+        db.loadPunishments(uuid, page).thenAccept(result ->
+                Bukkit.getScheduler().runTask(plugin, () ->callback.accept(result)));
     }
 }

@@ -27,6 +27,7 @@ public enum Messages {
     USAGE_CREATE("command.usage-create", "{prefix}&cИспользование: /jailadmin create <имя> [-n]"),
     USAGE_DELETE("command.usage-delete", "{prefix}&cИспользование: /jailadmin delete <имя>"),
     USAGE_TELEPORT("command.usage-teleport", "{prefix}&cИспользование: /jailadmin teleport <имя>"),
+    USAGE_PUNISHMENTS("command.usage-punishments", "{prefix}&cИспользование: /jailpunishments <ник> [страница]"),
 
     JAIL_SUCCESS("jail.jail-success", "{prefix}&cИгроку &e%player%&c порвут туза в тюрьме &e%jail%&c!"),
     UNJAIL_SUCCESS("jail.unjail-success", "{prefix}&cИгрок &e%player%&c освобождён."),
@@ -59,6 +60,14 @@ public enum Messages {
                     "&7├&cОсталось: &e%remaining%",
                     "&7├&cАдминистратор: &e%punisher%",
                     "&7└&cПричина: &e%reason%")),
+
+    PUNISHMENTS_EMPTY("jail.punishments-empty", "{prefix}&cИгрок &e%player%&c не наказывал других игроков."),
+    PUNISHMENTS_HEADER("jail.punishments-header", "{prefix}&cИстория выданных наказаний &e%player%&c (страница &f%page%&e/&f%pages%&e):"),
+    PUNISHMENTS_LINES("jail.punishments-lines",
+            List.of("&7┌&e#%id%&c. Тюрьма - &e%jail%&c, время - &e%time% %remaining%",
+                    "&7├&cАдминистратор: &e%punisher%",
+                    "&7├&cПричина: &e%reason%",
+                    "&7└&cСтатус: &e%status%")),
 
     HISTORY_EMPTY("jail.history-empty", "{prefix}&cИстория наказаний игрока &e%player%&c пуста."),
     HISTORY_HEADER("jail.history-header", "{prefix}&cИстория наказаний игрока &e%player%&c (страница &f%page%&e/&f%pages%&e):"),
