@@ -23,6 +23,7 @@
 | `/unjail <ник>` | Освободить игрока | `cloudjail.unjail` |
 | `/jailhistory <ник> [страница]` | История наказаний | `cloudjail.history` |
 | `/jailpunishments <ник> [страница]` | История выданных наказаний | `cloudjail.history` |
+| `/jailedplayers [страница]` | Все активные нказания | `cloudjail.history` |
 | `/jailinfo` | Информация о своём наказании | — |
 | `/jailadmin create <имя> [-n]` | Создать тюрьму | `cloudJail.admin` |
 | `/jailadmin delete <имя>` | Удалить тюрьму | `cloudJail.admin` |
