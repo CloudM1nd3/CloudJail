@@ -13,9 +13,7 @@ import org.cloudplugins.cloudJail.objects.Jail;
 import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
@@ -225,6 +223,12 @@ public class PunishmentManager {
         player.teleport(location != null
                 ? location
                 : Bukkit.getWorlds().getFirst().getSpawnLocation());
+    }
+
+    public void getActive(int page, Consumer<PageDisplay> callback){
+        List<Punishment> all = new ArrayList<>(activePunishments.values());
+        all.sort(Comparator.comparingLong(Punishment::getStartTime).reversed());
+        callback.accept(PageDisplay.of(all, page));
     }
 
     public void getHistory(UUID uuid, int page, Consumer<PageDisplay> callback){

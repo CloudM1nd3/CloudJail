@@ -45,9 +45,7 @@ public class JailHistoryCommand implements CommandExecutor {
         final int page = Math.max(1, parsed);
 
         PunishmentManager.getInstance().getHistory(target.getUniqueId(), page, result -> {
-            Punishment active = result.getActive();
-
-            if (result.getTotal() == 0 && active == null) {
+            if (result.getTotal() == 0) {
                 Messages.HISTORY_EMPTY.send(sender, "%player%", args[0]);
                 return;
             }
@@ -64,17 +62,14 @@ public class JailHistoryCommand implements CommandExecutor {
                     "%page%", String.valueOf(page),
                     "%pages%", String.valueOf(Math.max(1, result.getTotalPages())));
 
-            List<Punishment> toShow = new ArrayList<>();
-            if (page == 1 && active != null) {
-                toShow.add(active);
-            }
-            toShow.addAll(result.getEntries());
+            List<Punishment> toShow = new ArrayList<>(result.getEntries());
 
             for (Punishment p : toShow) {
                 String remainingTime = "";
-                if (p == active) {
+                if (!p.isExpired()) {
+                    Punishment active = PunishmentManager.getInstance().getActivePunishment(p.getPlayerUUID());
                     remainingTime = Messages.HISTORY_REMAINING_TIME.get(
-                            "%time%", TimeParser.format(p.getRemainingMillis()));
+                            "%time%", TimeParser.format(active.getRemainingMillis()));
                 }
 
                 Messages.HISTORY_LINES.sendList(sender,

@@ -28,6 +28,7 @@ public enum Messages {
     USAGE_DELETE("command.usage-delete", "{prefix}&cИспользование: /jailadmin delete <имя>"),
     USAGE_TELEPORT("command.usage-teleport", "{prefix}&cИспользование: /jailadmin teleport <имя>"),
     USAGE_PUNISHMENTS("command.usage-punishments", "{prefix}&cИспользование: /jailpunishments <ник> [страница]"),
+    USAGE_JAILED_PLAYERS("command.usage-jailed-players", "{prefix}&cИспользование: /jailedplayers [страница]"),
 
     JAIL_SUCCESS("jail.jail-success", "{prefix}&cИгроку &e%player%&c порвут туза в тюрьме &e%jail%&c!"),
     UNJAIL_SUCCESS("jail.unjail-success", "{prefix}&cИгрок &e%player%&c освобождён."),
@@ -69,6 +70,8 @@ public enum Messages {
                     "&7├&cПричина: &e%reason%",
                     "&7└&cСтатус: &e%status%")),
 
+    JAILED_PLAYERS_EMPTY("jail.jailed-players-empty", "{prefix}&cНикто не сидит в тюрьме."),
+    JAILED_PLAYERS_HEADER("jail.jailed-players-header", "{prefix}&cАктивные наказания (страница &f%page%&e/&f%pages%&e):"),
     HISTORY_EMPTY("jail.history-empty", "{prefix}&cИстория наказаний игрока &e%player%&c пуста."),
     HISTORY_HEADER("jail.history-header", "{prefix}&cИстория наказаний игрока &e%player%&c (страница &f%page%&e/&f%pages%&e):"),
     HISTORY_LINES("jail.history-lines",

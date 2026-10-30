@@ -32,7 +32,7 @@ public class JailTabCompleter implements TabCompleter {
                 }
                 return Collections.emptyList();
             }
-            case "unjail", "jailhistory" -> {
+            case "unjail", "jailhistory", "jailpunishments" -> {
                 if (args.length == 1) {
                     return filter(getOnlinePlayers(), args[0]);
                 }

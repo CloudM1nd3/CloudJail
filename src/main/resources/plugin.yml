@@ -22,6 +22,10 @@ commands:
     description: История выданных наказаний игроком
     usage: /jailpunishments <ник> [страница]
     aliases: [jailpunish]
+  jailedplayers:
+    description: Список всех активных наказаний
+    usage: /jailedplayers [страница]
+    aliases: [jailedlist]
   jailadmin:
     description: Управление тюрьмами
     usage: /jailadmin <create|delete|tp|reload>

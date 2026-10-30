@@ -134,70 +134,38 @@ public class Database {
         }, executor);
     }
 
-    public CompletableFuture<PageDisplay> loadHistory(UUID uuid, int page) {
-        return CompletableFuture.supplyAsync(() -> {
-            int total = 0;
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "SELECT COUNT(*) FROM punishments WHERE player_uuid = ? AND status IN ('EXPIRED', 'RELEASED')")) {
-                ps.setString(1, uuid.toString());
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) total = rs.getInt(1);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            List<Punishment> list = new ArrayList<>();
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "SELECT * FROM punishments WHERE player_uuid = ? AND status IN ('EXPIRED', 'RELEASED') " +
-                            "ORDER BY id DESC LIMIT ? OFFSET ?")) {
-                ps.setString(1, uuid.toString());
-                ps.setInt(2, 5);
-                ps.setInt(3, (page - 1) * 5);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    list.add(readPunishment(rs));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            Punishment active = PunishmentManager.getInstance().getActivePunishment(uuid);
-            int totalPages = Math.max(1, (total + 5 - 1) / 5);
-            return new PageDisplay(active, list, totalPages, total);
-        }, executor);
+    public CompletableFuture<PageDisplay> loadHistory(UUID playerUUID, int page) {
+        return CompletableFuture.supplyAsync(() -> queryPage("player_uuid", playerUUID, page), executor);
     }
 
-    public CompletableFuture<PageDisplay> loadPunishments(UUID uuid, int page) {
-        return CompletableFuture.supplyAsync(() -> {
-            int total = 0;
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "SELECT COUNT(*) FROM punishments WHERE punisher_uuid = ?")) {
-                ps.setString(1, uuid.toString());
-                ResultSet rs = ps.executeQuery();
-                if (rs.next()) total = rs.getInt(1);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            List<Punishment> list = new ArrayList<>();
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "SELECT * FROM punishments WHERE punisher_uuid = ?" +
-                            "ORDER BY id DESC LIMIT ? OFFSET ?")) {
-                ps.setString(1, uuid.toString());
-                ps.setInt(2, 5);
-                ps.setInt(3, (page - 1) * 5);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    list.add(readPunishment(rs));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            int totalPages = Math.max(1, (total + 5 - 1) / 5);
-            return new PageDisplay(list, totalPages, total);
-        }, executor);
+    public CompletableFuture<PageDisplay> loadPunishments(UUID punisherUUID, int page) {
+        return CompletableFuture.supplyAsync(() -> queryPage("punisher_uuid", punisherUUID, page), executor);
     }
 
+    private PageDisplay queryPage(String column, UUID uuid, int page) {
+        int total = 0;
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT COUNT(*) FROM punishments WHERE " + column + " = ?")) {
+            ps.setString(1, uuid.toString());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) total = rs.getInt(1);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        List<Punishment> list = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(
+                "SELECT * FROM punishments WHERE " + column + " = ? ORDER BY id DESC LIMIT 5 OFFSET ?")) {
+            ps.setString(1, uuid.toString());
+            ps.setInt(2, (page - 1) * 5);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) list.add(readPunishment(rs));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return new PageDisplay(list, Math.max(1, (total + 4) / 5), total);
+    }
 
     public void close() {
         executor.shutdown();
@@ -262,7 +230,7 @@ public class Database {
 
     private void updateStatus(Punishment p) {
         try (PreparedStatement ps = connection.prepareStatement(
-                "UPDATE punishments SET status = ? WHERE player_uuid = ? AND status = 'ACTIVE'")) {
+                "UPDATE punishments SET status = ?, remainingMillis = 0 WHERE player_uuid = ? AND status = 'ACTIVE'")) {
             ps.setString(1, p.getStatus().name());
             ps.setString(2, p.getPlayerUUID().toString());
             ps.executeUpdate();
