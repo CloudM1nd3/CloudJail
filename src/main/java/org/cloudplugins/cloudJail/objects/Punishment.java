@@ -17,7 +17,7 @@ public class Punishment {
     private final long duration;
     private long remainingMillis;
     private Status status;
-    private Location lastLocation;
+    private final Location lastLocation;
     private boolean pendingTeleport;
 
     //Для новых записей remaining = duration, id определяется после создания объекта дополнительным запросом

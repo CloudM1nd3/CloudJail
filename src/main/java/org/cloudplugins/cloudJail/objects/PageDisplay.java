@@ -9,10 +9,6 @@ public class PageDisplay {
     private final int total;
 
     public PageDisplay(List<Punishment> entries, int totalPages, int total) {
-        this(null, entries, totalPages, total);
-    }
-
-    public PageDisplay(Punishment active, List<Punishment> entries, int totalPages, int total) {
         this.entries = entries;
         this.totalPages = totalPages;
         this.total = total;

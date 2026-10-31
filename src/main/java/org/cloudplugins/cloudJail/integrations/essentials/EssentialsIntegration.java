@@ -25,5 +25,4 @@ public class EssentialsIntegration {
         User user = essentials.getUser(player);
         return user != null && user.isAfk();
     }
-
 }
