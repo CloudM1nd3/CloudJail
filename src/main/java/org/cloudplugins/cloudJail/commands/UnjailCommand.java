@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.Punishment;
+import org.cloudplugins.cloudJail.objects.PunishmentStatus;
 
 public class UnjailCommand implements CommandExecutor {
 
@@ -35,7 +36,7 @@ public class UnjailCommand implements CommandExecutor {
             return true;
         }
 
-        PunishmentManager.getInstance().release(playerPunishment, Punishment.Status.RELEASED);
+        PunishmentManager.getInstance().release(playerPunishment, PunishmentStatus.RELEASED);
         Messages.UNJAIL_SUCCESS.send(sender, "%player%", player.getName());
         return true;
     }

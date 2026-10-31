@@ -12,6 +12,7 @@ import org.cloudplugins.cloudJail.database.Database;
 import org.cloudplugins.cloudJail.objects.Jail;
 import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
+import org.cloudplugins.cloudJail.objects.PunishmentStatus;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,7 +104,7 @@ public class PunishmentManager {
         Punishment p = activePunishments.get(player.getUniqueId());
         if (p == null) return;
         if (p.isExpired()) {
-            release(p, Punishment.Status.EXPIRED);
+            release(p, PunishmentStatus.EXPIRED);
             return;
         }
 
@@ -138,7 +139,7 @@ public class PunishmentManager {
             for (Punishment p : activePunishments.values()) {
                 if (!shouldTick(p)) continue;
                 if (p.tick(1000L)) {
-                    release(p, Punishment.Status.EXPIRED);
+                    release(p, PunishmentStatus.EXPIRED);
                 }
             }
             if (JailScoreboardManager.getInstance() != null) {
@@ -169,7 +170,7 @@ public class PunishmentManager {
 
         long now = System.currentTimeMillis();
         Punishment p = new Punishment(player.getName(), uuid, punisherName, punisher_uuid, jailName, reason,
-                now, durationMillis, durationMillis, Punishment.Status.ACTIVE, player.getLocation());
+                now, durationMillis, durationMillis, PunishmentStatus.ACTIVE, player.getLocation());
 
         Player online = player.getPlayer();
         if (online == null) {
@@ -187,7 +188,7 @@ public class PunishmentManager {
         return true;
     }
 
-    public void release(Punishment punishment, Punishment.Status status) {
+    public void release(Punishment punishment, PunishmentStatus status) {
         Punishment p = activePunishments.remove(punishment.getPlayerUUID());
         if (p == null) return;
 
@@ -197,7 +198,7 @@ public class PunishmentManager {
         if (player != null) {
             JailScoreboardManager.getInstance().hide(player);
             teleportBack(player, p.getLastLocation());
-            if (status == Punishment.Status.EXPIRED) {
+            if (status == PunishmentStatus.EXPIRED) {
                 Messages.TERM_ENDED.send(player);
             } else {
                 Messages.SET_RELEASED.send(player);

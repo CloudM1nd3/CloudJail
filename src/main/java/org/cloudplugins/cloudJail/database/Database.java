@@ -6,6 +6,7 @@ import org.bukkit.World;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
+import org.cloudplugins.cloudJail.objects.PunishmentStatus;
 
 import java.io.File;
 import java.sql.*;
@@ -261,8 +262,8 @@ public class Database {
 
     private Punishment readPunishment(ResultSet rs) throws SQLException {
         UUID playerUUID = UUID.fromString(rs.getString("player_uuid"));
-        Punishment.Status status = Punishment.Status.valueOf(rs.getString("status"));
-        Location last = status == Punishment.Status.ACTIVE ? loadLastLocation(playerUUID) : null;
+        PunishmentStatus status = PunishmentStatus.valueOf(rs.getString("status"));
+        Location last = status == PunishmentStatus.ACTIVE ? loadLastLocation(playerUUID) : null;
 
         Punishment p = new Punishment(
                 rs.getString("player"),

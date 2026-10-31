@@ -5,7 +5,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.Punishment;
@@ -75,7 +74,7 @@ public class JailHistoryCommand implements CommandExecutor {
                 Messages.HISTORY_LINES.sendList(sender,
                         "%id%", String.valueOf(p.getId()),
                         "%jail%", p.getJailName(),
-                        "%status%", p.getStatus().name(),
+                        "%status%", p.getStatus().getMessage().get(),
                         "%time%", TimeParser.format(p.getDuration()),
                         "%remaining%", remainingTime,
                         "%punisher%", p.getPunisherName(),

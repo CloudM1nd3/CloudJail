@@ -4,8 +4,6 @@ import org.bukkit.Location;
 import java.util.UUID;
 
 public class Punishment {
-    public enum Status { ACTIVE, EXPIRED, RELEASED }
-
     private int id;
     private final String playerName;
     private final UUID playerUUID;
@@ -16,13 +14,13 @@ public class Punishment {
     private final long startTime;
     private final long duration;
     private long remainingMillis;
-    private Status status;
+    private PunishmentStatus status;
     private final Location lastLocation;
     private boolean pendingTeleport;
 
     //Для новых записей remaining = duration, id определяется после создания объекта дополнительным запросом
     public Punishment(String playerName, UUID playerUUID, String punisherName, UUID punisherUUID, String jailName, String reason,
-                      long startTime, long duration, long remainingMillis, Status status, Location lastLocation) {
+                      long startTime, long duration, long remainingMillis, PunishmentStatus status, Location lastLocation) {
         this.playerName = playerName;
         this.playerUUID = playerUUID;
         this.punisherName = punisherName;
@@ -101,11 +99,11 @@ public class Punishment {
         return duration;
     }
 
-    public Status getStatus() {
+    public PunishmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(PunishmentStatus status) {
         this.status = status;
     }
 

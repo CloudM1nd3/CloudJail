@@ -48,9 +48,9 @@ public class TimeParser {
         long s = seconds % 60;
 
         StringBuilder sb = new StringBuilder();
-        if (d > 0) sb.append(d).append("д ");
-        if (h > 0) sb.append(h).append("ч ");
-        if (m > 0) sb.append(m).append("м ");
+        if (d > 0) sb.append(d).append("д. ");
+        if (h > 0) sb.append(h).append("ч. ");
+        if (m > 0) sb.append(m).append("м. ");
         if (s > 0 || sb.isEmpty()) sb.append(s).append("с.");
         return sb.toString().trim();
     }

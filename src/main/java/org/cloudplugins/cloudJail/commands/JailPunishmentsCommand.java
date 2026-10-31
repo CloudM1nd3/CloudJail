@@ -74,7 +74,7 @@ public class JailPunishmentsCommand implements CommandExecutor {
                 Messages.PUNISHMENTS_LINES.sendList(sender,
                         "%id%", String.valueOf(p.getId()),
                         "%jail%", p.getJailName(),
-                        "%status%", p.getStatus().name(),
+                        "%status%",  p.getStatus().getMessage().get(),
                         "%time%", TimeParser.format(p.getDuration()),
                         "%remaining%", remainingTime,
                         "%punisher%", p.getPunisherName(),
