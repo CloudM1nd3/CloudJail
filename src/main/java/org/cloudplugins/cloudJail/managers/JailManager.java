@@ -9,7 +9,6 @@ import org.cloudplugins.cloudJail.objects.Jail;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public class JailManager {

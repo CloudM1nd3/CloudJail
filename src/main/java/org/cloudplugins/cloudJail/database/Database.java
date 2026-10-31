@@ -3,7 +3,6 @@ package org.cloudplugins.cloudJail.database;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
 import org.cloudplugins.cloudJail.objects.PunishmentStatus;
