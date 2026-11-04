@@ -58,5 +58,53 @@ deny:
       - /links
       - /jailinfo
 
+#Вебхуки.
+Webhooks:
+  Discord:
+    enable: false
+    url: '<PASTE YOUR WEBHOOK URL HERE>'
+    templates:
+      jail: |
+        {
+          "allowed_mentions": { "parse": [] },
+          "embeds": [{
+            "title": "Игрок посажен",
+            "description": "**{player}** отправлен в тюрьму",
+            "color": 15158332,
+            "fields": [
+              { "name": "Причина", "value": "{reason}", "inline": true },
+              { "name": "Срок", "value": "{duration}", "inline": true },
+              { "name": "Выдал", "value": "{punisher}" }
+            ]
+          }]
+        }
+      unjail: |
+        {
+          "allowed_mentions": { "parse": [] },
+          "embeds": [{
+            "title": "Игрок освобождён",
+            "description": "**{player}** выпущен из тюрьмы",
+            "color": 3066993,
+            "fields": [
+              { "name": "Освободил", "value": "{punisher}" }
+            ]
+          }]
+        }
+  Telegram:
+    enable: true
+    bot-token: ''
+    chat-id: ''
+    templates:
+      jail: |
+        {
+          "parse_mode": "HTML",
+          "text": "🔒 <b>{player}</b> посажен в тюрьму\nПричина: {reason}\nСрок: {duration}\nВыдал: {punisher}"
+        }
+      unjail: |
+        {
+          "parse_mode": "HTML",
+          "text": "🔓 <b>{player}</b> выпущен из тюрьмы\nОсвободил: {staff}"
+        }
+
 #Список тюрем, заполняется командами плагина автоматически, менять тут что-то вручную смысла нет B)
 Jails: []
