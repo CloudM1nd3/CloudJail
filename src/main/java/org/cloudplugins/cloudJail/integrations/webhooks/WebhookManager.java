@@ -96,9 +96,25 @@ public class WebhookManager {
 
     public static void send(WebhookType type, Punishment p) {
         if (instance == null) return;
-        Map<String, String> values = instance.toPlaceholders(p);
-        instance.dispatch(instance.discord, type, values);
-        instance.dispatch(instance.telegram, type, values);
+
+        Map<String, String> values;
+        try {
+            values = instance.toPlaceholders(p);
+        } catch (Exception e) {
+            instance.plugin.getLogger().warning("Webhook: не удалось собрать плейсхолдеры: " + e.getMessage());
+            return;
+        }
+
+        instance.safeDispatch(instance.discord, type, values);
+        instance.safeDispatch(instance.telegram, type, values);
+    }
+
+    private void safeDispatch(Target target, WebhookType type, Map<String, String> values) {
+        try {
+            dispatch(target, type, values);
+        } catch (Exception e) {
+            plugin.getLogger().warning("Webhook: ошибка отправки (" + type + "): " + e.getMessage());
+        }
     }
 
     private void dispatch(Target target, WebhookType type, Map<String, String> values) {
@@ -110,15 +126,20 @@ public class WebhookManager {
         post(target.url(), ready.toString());
     }
 
+    private static String orDash(String s) {
+        return (s == null || s.isBlank()) ? "—" : s;
+    }
+
     private Map<String, String> toPlaceholders(Punishment p) {
         Map<String, String> m = new HashMap<>();
-        m.put("player", p.getPlayerName());
-        m.put("punisher", p.getPunisherName());
-        m.put("reason", p.getReason());
-        m.put("jail", p.getJailName());
-        m.put("unjailer", p.getUnjailer());
-        m.put("unjail_reason", p.getUnjailReason());
-        m.put("date", TimeParser.formatDate(p.getStartTimeStamp()));
+        m.put("player", orDash(p.getPlayerName()));
+        m.put("punisher", orDash(p.getPunisherName()));
+        m.put("reason", orDash(p.getReason()));
+        m.put("jail", orDash(p.getJailName()));
+        m.put("unjailer", orDash(p.getUnjailer()));
+        m.put("unjail_reason", orDash(p.getUnjailReason()));
+        m.put("current_date", TimeParser.formatDate(System.currentTimeMillis()));
+        m.put("punishment_date", TimeParser.formatDate(p.getStartTimeStamp()));
         m.put("duration", TimeParser.format(p.getDuration()));
         return m;
     }

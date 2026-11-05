@@ -117,28 +117,15 @@ public class Config {
               "allowed_mentions": { "parse": [] },
               "embeds": [{
                 "title": "🔒 Игрок посажен в тюрьму",
-                "description": "**`{player}`** отправлен в тюрьму",
                 "color": 15158332,
                 "fields": [
-                  {
-                    "name": "📋 Причина",
-                    "value": "{reason}",
-                    "inline": true
-                  },
-                  {
-                    "name": "⏱ Срок",
-                    "value": "{duration}",
-                    "inline": true
-                  },
-                  {
-                    "name": "👮 Выдал",
-                    "value": "`{punisher}`",
-                    "inline": false
-                  }
+                  { "name": "👤 Игрок", "value": "`{player}`", "inline": true },
+                  { "name": "⏱ Срок", "value": "{duration}", "inline": true },
+                  { "name": "🏛 Тюрьма", "value": "{jail}", "inline": true },
+                  { "name": "📋 Причина", "value": "{reason}", "inline": false },
+                  { "name": "👮 Выдал", "value": "`{punisher}`", "inline": false }
                 ],
-                "footer": {
-                  "text": "Система наказаний"
-                }
+                "footer": { "text": "Система наказаний • {current_date}" }
               }]
             }
             """);
@@ -150,23 +137,13 @@ public class Config {
               "allowed_mentions": { "parse": [] },
               "embeds": [{
                 "title": "✅ Игрок освобождён",
-                "description": "**`{player}`** выпущен из тюрьмы",
                 "color": 3066993,
                 "fields": [
-                  {
-                    "name": "🔓 Освободил",
-                    "value": "`{unjailer}`",
-                    "inline": true
-                  },
-                  {
-                    "name": "📝 Причина",
-                    "value": "{unjail_reason}",
-                    "inline": true
-                  }
+                  { "name": "👤 Игрок", "value": "`{player}`", "inline": true },
+                  { "name": "🔓 Освободил", "value": "`{unjailer}`", "inline": true },
+                  { "name": "📝 Причина освобождения", "value": "{unjail_reason}", "inline": false }
                 ],
-                "footer": {
-                  "text": "Система наказаний"
-                }
+                "footer": { "text": "Система наказаний • {current_date}" }
               }]
             }
             """);
@@ -178,18 +155,12 @@ public class Config {
               "allowed_mentions": { "parse": [] },
               "embeds": [{
                 "title": "⌛ Срок наказания истёк",
-                "description": "**`{player}`** автоматически освобождён из тюрьмы",
                 "color": 3447003,
                 "fields": [
-                  {
-                    "name": "Статус",
-                    "value": "Срок наказания полностью отбыт",
-                    "inline": false
-                  }
+                  { "name": "👤 Игрок", "value": "`{player}`", "inline": true },
+                  { "name": "📌 Статус", "value": "Автоматически освобождён, срок полностью отбыт", "inline": false }
                 ],
-                "footer": {
-                  "text": "Система наказаний"
-                }
+                "footer": { "text": "Система наказаний • {current_date}" }
               }]
             }
             """);
@@ -212,8 +183,8 @@ public class Config {
         if (!config.isSet("Webhooks.Telegram.templates.jailed")) {
             config.set("Webhooks.Telegram.templates.jailed", """
             {
-              "text": "<b>🔒 Игрок посажен в тюрьму</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n├ 📋 Причина: <i>{reason}</i>\\n├ ⏱ Срок: <b>{duration}</b>\\n└ 👮 Выдал: <code>{punisher}</code>",
-              "parse_mode": "HTML"
+              "parse_mode": "HTML",
+              "text": "<b>🔒 Игрок посажен в тюрьму</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n├ ⏱ Срок: <b>{duration}</b>\\n├ 🏛 Тюрьма: <code>{jail}</code>\\n├ 📋 Причина: <i>{reason}</i>\\n└ 👮 Выдал: <code>{punisher}</code>\\n\\n🕒 {current_date}"
             }
             """);
             changed = true;
@@ -221,8 +192,8 @@ public class Config {
         if (!config.isSet("Webhooks.Telegram.templates.released")) {
             config.set("Webhooks.Telegram.templates.released", """
             {
-              "text": "<b>✅ Игрок освобождён</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n├ 🔓 Освободил: <code>{unjailer}</code>\\n└ 📝 Причина: <i>{unjail_reason}</i>",
-              "parse_mode": "HTML"
+              "parse_mode": "HTML",
+              "text": "<b>✅ Игрок освобождён</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n├ 🔓 Освободил: <code>{unjailer}</code>\\n└ 📝 Причина освобождения: <i>{unjail_reason}</i>\\n\\n🕒 {current_date}"
             }
             """);
             changed = true;
@@ -230,8 +201,8 @@ public class Config {
         if (!config.isSet("Webhooks.Telegram.templates.expired")) {
             config.set("Webhooks.Telegram.templates.expired", """
             {
-              "text": "<b>⌛ Срок наказания истёк</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n└ Статус: Срок полностью отбыт",
-              "parse_mode": "HTML"
+              "parse_mode": "HTML",
+              "text": "<b>⌛ Срок наказания истёк</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n└ 📌 Статус: автоматически освобождён, срок полностью отбыт\\n\\n🕒 {current_date}"
             }
             """);
             changed = true;
