@@ -8,6 +8,7 @@ import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.database.Database;
 import org.cloudplugins.cloudJail.integrations.essentials.EssentialsIntegration;
 import org.cloudplugins.cloudJail.integrations.placeholderapi.PlaceHolderApiHook;
+import org.cloudplugins.cloudJail.integrations.webhooks.WebhookManager;
 import org.cloudplugins.cloudJail.listeners.PlayerListener;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.JailScoreboardManager;
@@ -82,6 +83,8 @@ public final class CloudJail extends JavaPlugin {
         } else {
             Bukkit.getLogger().info("[CloudJail] PAPI не подключён, без плейсхолдеров сегодня :(");
         }
+
+        WebhookManager.init(instance);
     }
 
     @Override

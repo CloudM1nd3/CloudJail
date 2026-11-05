@@ -9,6 +9,8 @@ import org.cloudplugins.cloudJail.CloudJail;
 import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.database.Database;
+import org.cloudplugins.cloudJail.integrations.webhooks.WebhookManager;
+import org.cloudplugins.cloudJail.integrations.webhooks.WebhookType;
 import org.cloudplugins.cloudJail.objects.Jail;
 import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
@@ -179,6 +181,7 @@ public class PunishmentManager {
 
         activePunishments.put(uuid, p);
         db.insertPunishment(p);
+        WebhookManager.send(WebhookType.JAIL, p);
 
         if (online != null) {
             Messages.SET_JAILED.send(online);
@@ -194,6 +197,12 @@ public class PunishmentManager {
 
         p.setStatus(status);
         Player player = Bukkit.getPlayer(p.getPlayerUUID());
+
+        if(status == PunishmentStatus.EXPIRED){
+            WebhookManager.send(WebhookType.EXPIRED, p);
+        } else {
+            WebhookManager.send(WebhookType.RELEASED, p);
+        }
 
         if (player != null) {
             JailScoreboardManager.getInstance().hide(player);

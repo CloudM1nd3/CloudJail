@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.cloudplugins.cloudJail.CloudJail;
 import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.configs.Messages;
+import org.cloudplugins.cloudJail.integrations.webhooks.WebhookManager;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.JailScoreboardManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
@@ -49,6 +50,7 @@ public class JailAdminCommand implements CommandExecutor {
             plugin.getPlayerListener().loadSettings();
             PunishmentManager.getInstance().loadSettings();
             JailScoreboardManager.getInstance().loadSettings();
+            WebhookManager.getInstance().loadWebhooks();
             Messages.RELOAD_SUCCESS.send(sender);
         } catch (Exception e) {
             Messages.RELOAD_FAILED.send(sender);

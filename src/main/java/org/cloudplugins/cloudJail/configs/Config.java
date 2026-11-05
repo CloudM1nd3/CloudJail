@@ -102,6 +102,82 @@ public class Config {
             changed = true;
         }
 
+
+        if (!config.isSet("Webhooks.Discord.enable")) {
+            config.set("Webhooks.Discord.enable", false);
+            changed = true;
+        }
+        if (!config.isSet("Webhooks.Discord.url")) {
+            config.set("Webhooks.Discord.url", "https://discord.com/api/webhooks/ID/TOKEN");
+            changed = true;
+        }
+        if (!config.isSet("Webhooks.Discord.templates.jail")) {
+            config.set("Webhooks.Discord.templates.jail", """
+            {
+              "allowed_mentions": { "parse": [] },
+              "embeds": [{
+                "title": "Игрок посажен",
+                "description": "**{player}** отправлен в тюрьму",
+                "color": 15158332,
+                "fields": [
+                  { "name": "Причина", "value": "{reason}", "inline": true },
+                  { "name": "Срок", "value": "{duration}", "inline": true },
+                  { "name": "Выдал", "value": "{staff}" }
+                ]
+              }]
+            }
+            """);
+            changed = true;
+        }
+        if (!config.isSet("Webhooks.Discord.templates.unjail")) {
+            config.set("Webhooks.Discord.templates.unjail", """
+            {
+              "allowed_mentions": { "parse": [] },
+              "embeds": [{
+                "title": "Игрок освобождён",
+                "description": "**{player}** выпущен из тюрьмы",
+                "color": 3066993,
+                "fields": [
+                  { "name": "Освободил", "value": "{staff}" }
+                ]
+              }]
+            }
+            """);
+            changed = true;
+        }
+
+        if (!config.isSet("Webhooks.Telegram.enable")) {
+            config.set("Webhooks.Telegram.enable", false);
+            changed = true;
+        }
+        if (!config.isSet("Webhooks.Telegram.bot-token")) {
+            config.set("Webhooks.Telegram.bot-token", "");
+            changed = true;
+        }
+        if (!config.isSet("Webhooks.Telegram.chat-id")) {
+            config.set("Webhooks.Telegram.chat-id", "");
+            changed = true;
+        }
+        if (!config.isSet("Webhooks.Telegram.templates.jail")) {
+            config.set("Webhooks.Telegram.templates.jail", """
+            {
+              "parse_mode": "HTML",
+              "text": "🔒 <b>{player}</b> посажен в тюрьму\\nПричина: {reason}\\nСрок: {duration}\\nВыдал: {staff}"
+            }
+            """);
+            changed = true;
+        }
+        if (!config.isSet("Webhooks.Telegram.templates.unjail")) {
+            config.set("Webhooks.Telegram.templates.unjail", """
+            {
+              "parse_mode": "HTML",
+              "text": "🔓 <b>{player}</b> выпущен из тюрьмы\\nОсвободил: {staff}"
+            }
+            """);
+            changed = true;
+        }
+
+
         return changed;
     }
 
