@@ -111,40 +111,91 @@ public class Config {
             config.set("Webhooks.Discord.url", "https://discord.com/api/webhooks/ID/TOKEN");
             changed = true;
         }
-        if (!config.isSet("Webhooks.Discord.templates.jail")) {
-            config.set("Webhooks.Discord.templates.jail", """
+        if (!config.isSet("Webhooks.Discord.templates.jailed")) {
+            config.set("Webhooks.Discord.templates.jailed", """
             {
               "allowed_mentions": { "parse": [] },
               "embeds": [{
-                "title": "Игрок посажен",
-                "description": "**{player}** отправлен в тюрьму",
+                "title": "🔒 Игрок посажен в тюрьму",
+                "description": "**`{player}`** отправлен в тюрьму",
                 "color": 15158332,
                 "fields": [
-                  { "name": "Причина", "value": "{reason}", "inline": true },
-                  { "name": "Срок", "value": "{duration}", "inline": true },
-                  { "name": "Выдал", "value": "{staff}" }
-                ]
+                  {
+                    "name": "📋 Причина",
+                    "value": "{reason}",
+                    "inline": true
+                  },
+                  {
+                    "name": "⏱ Срок",
+                    "value": "{duration}",
+                    "inline": true
+                  },
+                  {
+                    "name": "👮 Выдал",
+                    "value": "`{punisher}`",
+                    "inline": false
+                  }
+                ],
+                "footer": {
+                  "text": "Система наказаний"
+                }
               }]
             }
             """);
             changed = true;
         }
-        if (!config.isSet("Webhooks.Discord.templates.unjail")) {
-            config.set("Webhooks.Discord.templates.unjail", """
+        if (!config.isSet("Webhooks.Discord.templates.released")) {
+            config.set("Webhooks.Discord.templates.released", """
             {
               "allowed_mentions": { "parse": [] },
               "embeds": [{
-                "title": "Игрок освобождён",
-                "description": "**{player}** выпущен из тюрьмы",
+                "title": "✅ Игрок освобождён",
+                "description": "**`{player}`** выпущен из тюрьмы",
                 "color": 3066993,
                 "fields": [
-                  { "name": "Освободил", "value": "{staff}" }
-                ]
+                  {
+                    "name": "🔓 Освободил",
+                    "value": "`{unjailer}`",
+                    "inline": true
+                  },
+                  {
+                    "name": "📝 Причина",
+                    "value": "{unjail_reason}",
+                    "inline": true
+                  }
+                ],
+                "footer": {
+                  "text": "Система наказаний"
+                }
               }]
             }
             """);
             changed = true;
         }
+        if (!config.isSet("Webhooks.Discord.templates.expired")) {
+            config.set("Webhooks.Discord.templates.expired", """
+            {
+              "allowed_mentions": { "parse": [] },
+              "embeds": [{
+                "title": "⌛ Срок наказания истёк",
+                "description": "**`{player}`** автоматически освобождён из тюрьмы",
+                "color": 3447003,
+                "fields": [
+                  {
+                    "name": "Статус",
+                    "value": "Срок наказания полностью отбыт",
+                    "inline": false
+                  }
+                ],
+                "footer": {
+                  "text": "Система наказаний"
+                }
+              }]
+            }
+            """);
+            changed = true;
+        }
+
 
         if (!config.isSet("Webhooks.Telegram.enable")) {
             config.set("Webhooks.Telegram.enable", false);
@@ -158,20 +209,29 @@ public class Config {
             config.set("Webhooks.Telegram.chat-id", "");
             changed = true;
         }
-        if (!config.isSet("Webhooks.Telegram.templates.jail")) {
-            config.set("Webhooks.Telegram.templates.jail", """
+        if (!config.isSet("Webhooks.Telegram.templates.jailed")) {
+            config.set("Webhooks.Telegram.templates.jailed", """
             {
-              "parse_mode": "HTML",
-              "text": "🔒 <b>{player}</b> посажен в тюрьму\\nПричина: {reason}\\nСрок: {duration}\\nВыдал: {staff}"
+              "text": "<b>🔒 Игрок посажен в тюрьму</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n├ 📋 Причина: <i>{reason}</i>\\n├ ⏱ Срок: <b>{duration}</b>\\n└ 👮 Выдал: <code>{punisher}</code>",
+              "parse_mode": "HTML"
             }
             """);
             changed = true;
         }
-        if (!config.isSet("Webhooks.Telegram.templates.unjail")) {
-            config.set("Webhooks.Telegram.templates.unjail", """
+        if (!config.isSet("Webhooks.Telegram.templates.released")) {
+            config.set("Webhooks.Telegram.templates.released", """
             {
-              "parse_mode": "HTML",
-              "text": "🔓 <b>{player}</b> выпущен из тюрьмы\\nОсвободил: {staff}"
+              "text": "<b>✅ Игрок освобождён</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n├ 🔓 Освободил: <code>{unjailer}</code>\\n└ 📝 Причина: <i>{unjail_reason}</i>",
+              "parse_mode": "HTML"
+            }
+            """);
+            changed = true;
+        }
+        if (!config.isSet("Webhooks.Telegram.templates.expired")) {
+            config.set("Webhooks.Telegram.templates.expired", """
+            {
+              "text": "<b>⌛ Срок наказания истёк</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n└ Статус: Срок полностью отбыт",
+              "parse_mode": "HTML"
             }
             """);
             changed = true;

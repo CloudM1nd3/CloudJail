@@ -64,46 +64,99 @@ Webhooks:
     enable: false
     url: '<PASTE YOUR WEBHOOK URL HERE>'
     templates:
-      jail: |
+      jailed: |
         {
           "allowed_mentions": { "parse": [] },
           "embeds": [{
-            "title": "Игрок посажен",
-            "description": "**{player}** отправлен в тюрьму",
+            "title": "🔒 Игрок посажен в тюрьму",
+            "description": "**`{player}`** отправлен в тюрьму",
             "color": 15158332,
             "fields": [
-              { "name": "Причина", "value": "{reason}", "inline": true },
-              { "name": "Срок", "value": "{duration}", "inline": true },
-              { "name": "Выдал", "value": "{punisher}" }
-            ]
+              {
+                "name": "📋 Причина",
+                "value": "{reason}",
+                "inline": true
+              },
+              {
+                "name": "⏱ Срок",
+                "value": "{duration}",
+                "inline": true
+              },
+              {
+                "name": "👮 Выдал",
+                "value": "`{punisher}`",
+                "inline": false
+              }
+            ],
+            "footer": {
+              "text": "Система наказаний"
+            }
           }]
         }
-      unjail: |
+
+      released: |
         {
           "allowed_mentions": { "parse": [] },
           "embeds": [{
-            "title": "Игрок освобождён",
-            "description": "**{player}** выпущен из тюрьмы",
+            "title": "✅ Игрок освобождён",
+            "description": "**`{player}`** выпущен из тюрьмы",
             "color": 3066993,
             "fields": [
-              { "name": "Освободил", "value": "{unjailer}" }
-            ]
+              {
+                "name": "🔓 Освободил",
+                "value": "`{unjailer}`",
+                "inline": true
+              },
+              {
+                "name": "📝 Причина",
+                "value": "{unjail_reason}",
+                "inline": true
+              }
+            ],
+            "footer": {
+              "text": "Система наказаний"
+            }
           }]
         }
+      expired: |
+        {
+          "allowed_mentions": { "parse": [] },
+          "embeds": [{
+            "title": "⌛ Срок наказания истёк",
+            "description": "**`{player}`** автоматически освобождён из тюрьмы",
+            "color": 3447003,
+            "fields": [
+              {
+                "name": "Статус",
+                "value": "Срок наказания полностью отбыт",
+                "inline": false
+              }
+            ],
+            "footer": {
+              "text": "Система наказаний"
+            }
+          }]
+        }
+
   Telegram:
-    enable: true
+    enable: false
     bot-token: ''
     chat-id: ''
     templates:
-      jail: |
+      jailed: |
         {
-          "parse_mode": "HTML",
-          "text": "🔒 <b>{player}</b> посажен в тюрьму\nПричина: {reason}\nСрок: {duration}\nВыдал: {punisher}"
+          "text": "<b>🔒 Игрок посажен в тюрьму</b>\n\n┌ 👤 Игрок: <code>{player}</code>\n├ 📋 Причина: <i>{reason}</i>\n├ ⏱ Срок: <b>{duration}</b>\n└ 👮 Выдал: <code>{punisher}</code>",
+          "parse_mode": "HTML"
         }
-      unjail: |
+      released: |
         {
-          "parse_mode": "HTML",
-          "text": "🔓 <b>{player}</b> выпущен из тюрьмы\nОсвободил: {unjailer}"
+          "text": "<b>✅ Игрок освобождён</b>\n\n┌ 👤 Игрок: <code>{player}</code>\n├ 🔓 Освободил: <code>{unjailer}</code>\n└ 📝 Причина: <i>{unjail_reason}</i>",
+          "parse_mode": "HTML"
+        }
+      expired: |
+        {
+          "text": "<b>⌛ Срок наказания истёк</b>\n\n┌ 👤 Игрок: <code>{player}</code>\n└ Статус: Срок полностью отбыт",
+          "parse_mode": "HTML"
         }
 
 #Список тюрем, заполняется командами плагина автоматически, менять тут что-то вручную смысла нет B)

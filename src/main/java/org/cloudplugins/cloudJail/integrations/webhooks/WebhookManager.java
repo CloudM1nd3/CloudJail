@@ -116,6 +116,9 @@ public class WebhookManager {
         m.put("punisher", p.getPunisherName());
         m.put("reason", p.getReason());
         m.put("jail", p.getJailName());
+        m.put("unjailer", p.getUnjailer());
+        m.put("unjail_reason", p.getUnjailReason());
+        m.put("date", TimeParser.formatDate(p.getStartTimeStamp()));
         m.put("duration", TimeParser.format(p.getDuration()));
         return m;
     }

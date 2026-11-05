@@ -181,7 +181,7 @@ public class PunishmentManager {
 
         activePunishments.put(uuid, p);
         db.insertPunishment(p);
-        WebhookManager.send(WebhookType.JAIL, p);
+        WebhookManager.send(WebhookType.JAILED, p);
 
         if (online != null) {
             Messages.SET_JAILED.send(online);
