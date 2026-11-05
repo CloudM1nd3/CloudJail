@@ -11,23 +11,27 @@ public class Punishment {
     private final UUID punisherUUID;
     private final String jailName;
     private final String reason;
-    private final long startTime;
+    private final long startTimeStamp;
     private final long duration;
     private long remainingMillis;
+    private String unjailer = null;
+    private String unjailReason = null;
+    private Long endTimeStamp = null;
     private PunishmentStatus status;
     private final Location lastLocation;
     private boolean pendingTeleport;
 
+
     //Для новых записей remaining = duration, id определяется после создания объекта дополнительным запросом
     public Punishment(String playerName, UUID playerUUID, String punisherName, UUID punisherUUID, String jailName, String reason,
-                      long startTime, long duration, long remainingMillis, PunishmentStatus status, Location lastLocation) {
+                      long startTimeStamp, long duration, long remainingMillis, PunishmentStatus status, Location lastLocation) {
         this.playerName = playerName;
         this.playerUUID = playerUUID;
         this.punisherName = punisherName;
         this.punisherUUID = punisherUUID;
         this.jailName = jailName;
         this.reason = reason;
-        this.startTime = startTime;
+        this.startTimeStamp = startTimeStamp;
         this.duration = duration;
         this.remainingMillis = remainingMillis;
         this.status = status;
@@ -91,8 +95,8 @@ public class Punishment {
         return reason;
     }
 
-    public long getStartTime() {
-        return startTime;
+    public long getStartTimeStamp() {
+        return startTimeStamp;
     }
 
     public long getDuration() {
@@ -109,6 +113,30 @@ public class Punishment {
 
     public Location getLastLocation() {
         return lastLocation;
+    }
+
+    public void setUnjailer(String unjailer){
+        this.unjailer = unjailer;
+    }
+
+    public void setUnjailReason(String reason){
+        this.unjailReason = reason;
+    }
+
+    public void setEndTime(Long endTimeStamp){
+        this.endTimeStamp = endTimeStamp;
+    }
+
+    public String getUnjailer(){
+        return unjailer;
+    }
+
+    public String getUnjailReason(){
+        return unjailReason;
+    }
+
+    public Long getEndTimeStamp(){
+        return endTimeStamp;
     }
 
 }

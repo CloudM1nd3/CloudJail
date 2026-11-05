@@ -10,6 +10,7 @@ import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.JailScoreboardManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
+import org.cloudplugins.cloudJail.utils.TimeParser;
 
 public class JailAdminCommand implements CommandExecutor {
     private CloudJail plugin = CloudJail.getInstance();
@@ -43,6 +44,7 @@ public class JailAdminCommand implements CommandExecutor {
         try {
             Config.reload();
             Messages.reload();
+            TimeParser.loadSettings();
             JailManager.getInstance().reload();
             plugin.getPlayerListener().loadSettings();
             PunishmentManager.getInstance().loadSettings();

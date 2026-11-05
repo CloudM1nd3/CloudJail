@@ -5,10 +5,13 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.cloudplugins.cloudJail.configs.Messages;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.objects.Punishment;
 import org.cloudplugins.cloudJail.objects.PunishmentStatus;
+
+import java.util.Arrays;
 
 public class UnjailCommand implements CommandExecutor {
 
@@ -34,6 +37,16 @@ public class UnjailCommand implements CommandExecutor {
             Messages.NOT_JAILED.send(sender, "%player%", player.getName());
             return true;
         }
+
+        playerPunishment.setUnjailer(sender.getName());
+        String unjailReason;
+        if (args.length > 1) {
+            String[] subArray = Arrays.copyOfRange(args, 1, args.length);
+            unjailReason = String.join(" ", subArray);
+        } else {
+            unjailReason = Messages.NO_REASON.get();
+        }
+        playerPunishment.setUnjailReason(unjailReason);
 
         PunishmentManager.getInstance().release(playerPunishment, PunishmentStatus.RELEASED);
         Messages.UNJAIL_SUCCESS.send(sender, "%player%", player.getName());

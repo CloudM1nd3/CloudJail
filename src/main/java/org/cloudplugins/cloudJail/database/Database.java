@@ -34,10 +34,13 @@ public class Database {
                     "punisher_uuid TEXT, " +
                     "jail_name TEXT NOT NULL, " +
                     "reason TEXT, " +
-                    "start_time INTEGER NOT NULL, " +
+                    "start_timestamp INTEGER NOT NULL, " +
                     "duration INTEGER NOT NULL, " +
                     "remainingMillis INTEGER NOT NULL, " +
                     "status TEXT NOT NULL, " +
+                    "unjailer TEXT, " +
+                    "unjail_reason TEXT, " +
+                    "end_timestamp INTEGER, " +
                     "pending_teleport INTEGER NOT NULL DEFAULT 0)");
 
             st.execute("CREATE TABLE IF NOT EXISTS last_locations (" +
@@ -62,8 +65,21 @@ public class Database {
     }
 
     public void releasePunishment(Punishment p, boolean playerOnline) {
+        p.setEndTime(System.currentTimeMillis());
         executor.execute(() -> {
-            updateStatus(p);
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "UPDATE punishments SET status = ?, remainingMillis = 0, unjailer = ?," +
+                            "unjail_reason = ?, end_timestamp = ? WHERE player_uuid = ? AND status = 'ACTIVE'")) {
+                ps.setString(1, p.getStatus().name());
+                ps.setString(2, p.getUnjailer());
+                ps.setString(3, p.getUnjailReason());
+                ps.setString(4, p.getEndTimeStamp().toString());
+                ps.setString(5, p.getPlayerUUID().toString());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
             if (playerOnline) {
                 deleteLastLocation(p.getPlayerUUID());
             } else {
@@ -182,15 +198,19 @@ public class Database {
 
     private void insert(Punishment p) {
         String sql = "INSERT INTO punishments (player, player_uuid, punisher, punisher_uuid, jail_name, reason, " +
-                "start_time, duration, remainingMillis, status, pending_teleport) VALUES (?,?,?,?,?,?,?,?,?,?, ?)";
+                "start_timeStamp, duration, remainingMillis, status, pending_teleport) VALUES (?,?,?,?,?,?,?,?,?,?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, p.getPlayerName());
             ps.setString(2, p.getPlayerUUID().toString());
             ps.setString(3, p.getPunisherName());
-            ps.setString(4, p.getPunisherUUID() != null ? p.getPunisherUUID().toString() : "NULL");
+            if (p.getPunisherUUID() != null) {
+                ps.setString(4, p.getPunisherUUID().toString());
+            } else {
+                ps.setNull(4, Types.VARCHAR);
+            }
             ps.setString(5, p.getJailName());
             ps.setString(6, p.getReason());
-            ps.setLong(7, p.getStartTime());
+            ps.setLong(7, p.getStartTimeStamp());
             ps.setLong(8, p.getDuration());
             ps.setLong(9, p.getRemainingMillis());
             ps.setString(10, p.getStatus().name());
@@ -222,17 +242,6 @@ public class Database {
             ps.setDouble(6, location.z());
             ps.setDouble(7, location.getYaw());
             ps.setDouble(8, location.getPitch());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void updateStatus(Punishment p) {
-        try (PreparedStatement ps = connection.prepareStatement(
-                "UPDATE punishments SET status = ?, remainingMillis = 0 WHERE player_uuid = ? AND status = 'ACTIVE'")) {
-            ps.setString(1, p.getStatus().name());
-            ps.setString(2, p.getPlayerUUID().toString());
             ps.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -271,11 +280,17 @@ public class Database {
                 rs.getString("punisher_uuid").equalsIgnoreCase("NULL") ? null : UUID.fromString(rs.getString("punisher_uuid")),
                 rs.getString("jail_name"),
                 rs.getString("reason"),
-                rs.getLong("start_time"),
+                rs.getLong("start_timestamp"),
                 rs.getLong("duration"),
                 rs.getLong("remainingMillis"),
                 status,
                 last);
+
+        p.setUnjailer(rs.getString("unjailer"));
+        p.setUnjailReason(rs.getString("unjail_reason"));
+        long end = rs.getLong("end_timestamp");
+        p.setEndTime(rs.wasNull() ? null : end);
+
         p.setId(rs.getInt("id"));
         p.setPendingTeleport(rs.getInt("pending_teleport") == 1);
         return p;

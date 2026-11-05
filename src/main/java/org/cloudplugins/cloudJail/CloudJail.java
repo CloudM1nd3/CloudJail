@@ -14,6 +14,7 @@ import org.cloudplugins.cloudJail.managers.JailScoreboardManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
 import org.cloudplugins.cloudJail.tabcompleter.JailTabCompleter;
+import org.cloudplugins.cloudJail.utils.TimeParser;
 
 import java.io.File;
 import java.util.List;
@@ -42,6 +43,7 @@ public final class CloudJail extends JavaPlugin {
             db = new Database(new File(getDataFolder(), "punishments.db"));
             JailManager.init(this);
             PunishmentManager.init(this, db);
+            TimeParser.loadSettings();
             JailScoreboardManager.init();
         } catch (Exception e) {
             getLogger().severe("Error starting plugin: " + e.getMessage());

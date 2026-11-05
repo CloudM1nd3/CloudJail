@@ -228,7 +228,7 @@ public class PunishmentManager {
 
     public void getActive(int page, Consumer<PageDisplay> callback){
         List<Punishment> all = new ArrayList<>(activePunishments.values());
-        all.sort(Comparator.comparingLong(Punishment::getStartTime).reversed());
+        all.sort(Comparator.comparingLong(Punishment::getStartTimeStamp).reversed());
         callback.accept(PageDisplay.of(all, page));
     }
 

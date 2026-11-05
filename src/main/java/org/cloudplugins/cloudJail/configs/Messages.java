@@ -41,7 +41,7 @@ public enum Messages {
     ALREADY_JAILED("jail.already-jailed", "{prefix}&cИгрок &e%player%&c уже отбывает срок под шконкой!"),
     UNJAIL_SUCCESS("jail.unjail-success", "{prefix}&cИгрок &e%player%&c освобождён."),
     NOT_JAILED("jail.not-jailed", "{prefix}&e%player% &cне отбывает срок."),
-    NO_REASON("jail.no-reason", "Потому что я могу!"),
+    NO_REASON("jail.no-reason", "Не указана"),
     INVALID_TIME("jail.invalid-time", "{prefix}&cНеверный формат времени. Примеры: &e30s&c, &e90m&c, &e1h30m&c, &e2d&c."),
     SET_JAILED("jail.set-jailed", "{prefix}&cВас посадили в тюрягу. Узнать срок, причину можно в скорборде справа или по &e[/jailinfo]"),
     SET_RELEASED("jail.set-released", "{prefix}&aВас выпустили из тюрьмы. Не нарушайте правила сервера &e[/rules]!"),
@@ -57,7 +57,8 @@ public enum Messages {
     HISTORY_EMPTY("history.empty", "{prefix}&cИстория наказаний игрока &e%player%&c пуста."),
     HISTORY_HEADER("history.header", "{prefix}&cИстория наказаний игрока &e%player%&c (страница &f%page%&e/&f%pages%&e):"),
     HISTORY_LINES("history.lines",
-            List.of("&7┌&e#%id%&c. Тюрьма - &e%jail%&c, время - &e%time%",
+            List.of("&7┌&e#%id%&c (&e%date%&c)",
+                    "&7├&cТюрьма - &e%jail%&c, срок - &e%time%",
                     "&7├&cАдминистратор: &e%punisher%",
                     "&7├&cПричина: &e%reason%",
                     "&7└&cСтатус: &e%status% %remaining%")),
@@ -66,7 +67,8 @@ public enum Messages {
     PUNISHMENTS_EMPTY("punishments.empty", "{prefix}&cИгрок &e%player%&c не наказывал других игроков."),
     PUNISHMENTS_HEADER("punishments.header", "{prefix}&cИстория выданных наказаний &e%player%&c (страница &f%page%&e/&f%pages%&e):"),
     PUNISHMENTS_LINES("punishments.lines",
-            List.of("&7┌&e#%id%&c. Тюрьма - &e%jail%&c, время - &e%time%",
+            List.of("&7┌&e#%id%&c (&e%date%&c)",
+                    "&7├&cТюрьма - &e%jail%&c, срок - &e%time%",
                     "&7├&cАдминистратор: &e%punisher%",
                     "&7├&cПричина: &e%reason%",
                     "&7└&cСтатус: &e%status% %remaining%")),
@@ -93,7 +95,16 @@ public enum Messages {
 
     PLACEHOLDER_JAILED("PlaceHolderAPI.jailed", "Арестован"),
     PLACEHOLDER_NOT_JAILED("PlaceHolderAPI.not_jailed", "На свободе"),
-    PLACEHOLDER_REMAINING("PlaceHolderAPI.remaining", "Оставшееся время: %time%");
+    PLACEHOLDER_REMAINING("PlaceHolderAPI.remaining", "Оставшееся время: %time%"),
+
+    FORMAT_DATE_PATTERN("format.date.date-format", "dd MMMM yyyy HH:mm:ss"),
+    FORMAT_DATE_TIMEZONE("format.date.timezone", "Europe/Moscow"),
+    FORMAT_DATE_LOCALE("format.date.locale", "ru-RU"),
+    FORMAT_UNIT_WEEKS("format.time-units.weeks", "н."),
+    FORMAT_UNIT_DAYS("format.time-units.days", "д."),
+    FORMAT_UNIT_HOURS("format.time-units.hours", "ч."),
+    FORMAT_UNIT_MINUTES("format.time-units.minutes", "м."),
+    FORMAT_UNIT_SECONDS("format.time-units.seconds", "с.");
 
 
     private final String path;
