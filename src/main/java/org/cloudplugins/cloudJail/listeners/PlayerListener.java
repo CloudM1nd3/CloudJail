@@ -1,6 +1,7 @@
 package org.cloudplugins.cloudJail.listeners;
 
 import io.papermc.paper.event.player.AsyncChatEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -27,10 +28,13 @@ import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
 import java.util.List;
 
 public class PlayerListener implements Listener {
-    private boolean blockMovement;
-    private boolean blockChat;
-    private boolean blockCommands;
-    private boolean blockConsume;
+    private boolean keepInventoryOnDeath;
+    private boolean denyMovement;
+    private boolean denyChat;
+    private boolean denyCommands;
+    private boolean denyConsume;
+    private boolean denyItemPickup;
+    private boolean denyItemDrop;
     private List<String> allowedCommands;
 
     public PlayerListener() {
@@ -38,10 +42,13 @@ public class PlayerListener implements Listener {
     }
 
     public void loadSettings() {
-        blockChat = Config.getBoolean("deny.chat", true);
-        blockMovement = Config.getBoolean("deny.movement", false);
-        blockConsume = Config.getBoolean("deny.consume", false);
-        blockCommands = Config.getBoolean("deny.commands.enable", true);
+        keepInventoryOnDeath = Config.getBoolean("keep-inventory-on-death", true);
+        denyItemPickup = Config.getBoolean("deny.item.pickup", true);
+        denyItemDrop = Config.getBoolean("deny.item.drop", true);
+        denyChat = Config.getBoolean("deny.chat", true);
+        denyMovement = Config.getBoolean("deny.movement", false);
+        denyConsume = Config.getBoolean("deny.consume", false);
+        denyCommands = Config.getBoolean("deny.commands.enable", true);
         allowedCommands = Config.getStringList("deny.commands.allowed-commands")
                 .stream().map(String::toLowerCase).toList();
         VoiceIntegration.setBlockVoiceChat(Config.getBoolean("deny.voice-chat", true));
@@ -155,22 +162,33 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onConsume(PlayerItemConsumeEvent e) {
-        if (!isJailed(e.getPlayer()) || !blockConsume) return;
+        if (!isJailed(e.getPlayer()) || !denyConsume) return;
         e.setCancelled(true);
         sendAB(e.getPlayer(), Messages.DENY_CONSUME);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onDrop(PlayerDropItemEvent e) {
-        if (!isJailed(e.getPlayer())) return;
+        if (!isJailed(e.getPlayer()) || !denyItemDrop) return;
         e.setCancelled(true);
+        sendAB(e.getPlayer(), Messages.DENY_ITEM_DROP);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onPickup(EntityPickupItemEvent e) {
-        if (e.getEntity() instanceof Player player && isJailed(player)) {
-            e.setCancelled(true);
-        }
+        if (!(e.getEntity() instanceof Player player) || !isJailed(player) || !denyItemPickup) return;
+        e.setCancelled(true);
+        sendAB(player, Messages.DENY_ITEM_PICKUP);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDeath(PlayerDeathEvent e) {
+        if (!isJailed(e.getEntity()) || !keepInventoryOnDeath) return;
+
+        e.setKeepInventory(true);
+        e.setKeepLevel(true);
+        e.setShouldDropExperience(false);
+        e.getDrops().clear();
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -199,23 +217,23 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncChatEvent e) {
-        if (!isJailed(e.getPlayer()) || !blockChat) return;
+        if (!isJailed(e.getPlayer()) || !denyChat) return;
         e.setCancelled(true);
         sendAB(e.getPlayer(), Messages.DENY_CHAT);
     }
-
     //В случае, если плагин на чат работает с устаревшим ивентом.
+
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLegacyChat(AsyncPlayerChatEvent e) {
-        if (!isJailed(e.getPlayer()) || !blockChat) return;
+        if (!isJailed(e.getPlayer()) || !denyChat) return;
         e.setCancelled(true);
         sendAB(e.getPlayer(), Messages.DENY_CHAT);
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onCommand(PlayerCommandPreprocessEvent e) {
-        if (!isJailed(e.getPlayer()) || !blockCommands || e.getPlayer().hasPermission("cloudJail.admin")) return;
+        if (!isJailed(e.getPlayer()) || !denyCommands || e.getPlayer().hasPermission("cloudJail.admin")) return;
 
         String msg = e.getMessage().toLowerCase();
 
@@ -229,7 +247,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent e) {
-        if (!blockMovement || !isJailed(e.getPlayer())) return;
+        if (!denyMovement || !isJailed(e.getPlayer())) return;
 
         Location pos1 = e.getFrom();
         Location pos2 = e.getTo();

@@ -44,19 +44,29 @@ public class Config {
     private static boolean addMissingDefaults() {
         boolean changed = false;
 
-        if (!config.isSet("isOfflineProgressEnabled")) {
-            config.set("isOfflineProgressEnabled", false);
+        if (!config.isSet("offline-progress")) {
+            config.set("offline-progress", false);
             changed = true;
         }
-        if (!config.isSet("isAFKProgressEnabled")) {
-            config.set("isAFKProgressEnabled", false);
+        if (!config.isSet("afk-progress")) {
+            config.set("afk-progress", false);
             changed = true;
         }
         if (!config.isSet("autosave")) {
             config.set("autosave", 600);
             changed = true;
         }
+        if(!config.isSet("keep-inventory-on-death")) {
+            config.set("keep-inventory-on-death", true);
+        }
 
+
+        if(!config.isSet("deny.item.pick-up")) {
+            config.set("deny.item.pick-up", true);
+        }
+        if(!config.isSet("deny.item.drop")) {
+            config.set("deny.item.drop", true);
+        }
         if (!config.isSet("deny.chat")) {
             config.set("deny.chat", true);
             changed = true;

@@ -1,9 +1,13 @@
 # Идёт ли время наказания, пока игрок НЕ на сервере.
-isOfflineProgressEnabled: false
+offline-progress: false
 
 # Идёт ли время наказания, пока игрок в AFK.
 # Работает только если на сервере установлен EssentialsX.
-isAFKProgressEnabled: false
+afk-progress: false
+
+# Сохранять ли вещи при смерти.
+# Важно - если deny.item.pick-up стоит false, то игрок не сможет подобрать выпавшие с него вещи)
+keep-inventory-on-death: true
 
 #Время для автосейва в БД (Default = 10min / 600 sec), 0 = без автосейва B)
 autosave: 600
@@ -39,6 +43,11 @@ deny:
   # Запретить говорить в голосовом чате (слышать игрок продолжит).
   # Работает, если установлен Simple Voice Chat и/или Plasmo Voice.
   voice-chat: true
+
+  #Запретить подбирать (pick-up) или выбрасывать (drop) предметы в тюрьме.
+  item:
+    pick-up: true
+    drop: true
 
   # Запретить писать в чат
   chat: true

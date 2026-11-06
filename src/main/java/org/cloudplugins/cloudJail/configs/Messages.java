@@ -92,6 +92,9 @@ public enum Messages {
     DENY_DAMAGE("deny.damage", "{prefix}&cНельзя драться, срок добавлю."),
     DENY_CHAT("deny.chat", "{prefix}&cПисать в чат нельзя, учи азбуку Морзе."),
     DENY_COMMAND("deny.command", "{prefix}&cВ тюрьме запрещено использовать эту команду."),
+    DENY_ITEM_DROP("deny.item-drop", "&cВ тюрьме запрещено выбрасывать предметы."),
+    DENY_ITEM_PICKUP("deny.item-pick-up", "&cВ тюрьме запрещено подбирать предметы."),
+
 
     PLACEHOLDER_JAILED("PlaceHolderAPI.jailed", "Арестован"),
     PLACEHOLDER_NOT_JAILED("PlaceHolderAPI.not_jailed", "На свободе"),

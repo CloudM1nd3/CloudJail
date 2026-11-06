@@ -69,8 +69,8 @@ public class PunishmentManager {
         autoSaveTicks = Config.getInt("autosave", 600) * 20;
         if(autoSaveTicksOld != autoSaveTicks) restartAutoSave();
 
-        isAFKProgressEnabled = Config.getBoolean("isAFKProgressEnabled", false);
-        isOfflineProgressEnabled = Config.getBoolean("isOfflineProgressEnabled", false);
+        isAFKProgressEnabled = Config.getBoolean("afk-progress", false);
+        isOfflineProgressEnabled = Config.getBoolean("offline-progress", false);
     }
 
     private void restartAutoSave() {
