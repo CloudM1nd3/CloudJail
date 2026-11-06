@@ -209,13 +209,6 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onHunger(FoodLevelChangeEvent e) {
-        if (e.getEntity() instanceof Player player && isJailed(player)) {
-            e.setCancelled(true);
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncChatEvent e) {
         if (!isJailed(e.getPlayer()) || !denyChat) return;
         e.setCancelled(true);
