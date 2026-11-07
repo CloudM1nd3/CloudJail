@@ -59,7 +59,7 @@ public class JailCommand implements CommandExecutor {
             reason = Messages.NO_REASON.get();
         }
 
-        UUID punisherUUID = sender instanceof Player ? player.getUniqueId() : null;
+        UUID punisherUUID = sender instanceof Player punisher ? punisher.getUniqueId() : null;
 
         PunishmentManager.getInstance().jail(
                 player,

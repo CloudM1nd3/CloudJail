@@ -74,6 +74,7 @@ public class JailHistoryCommand implements CommandExecutor {
                 Messages.HISTORY_LINES.sendList(sender,
                         "%id%", String.valueOf(p.getId()),
                         "%jail%", p.getJailName(),
+                        "%player%", p.getPlayerName(),
                         "%status%", p.getStatus().getMessage().get("%unjailer%", p.getUnjailer() == null ? "" : p.getUnjailer()),
                         "%date%", TimeParser.formatDate(p.getStartTimeStamp()),
                         "%time%", TimeParser.format(p.getDuration()),

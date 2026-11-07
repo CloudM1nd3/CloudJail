@@ -52,9 +52,10 @@ public class JailedPlayersCommand implements CommandExecutor {
             for (Punishment p : toShow) {
                 String remainingTime = Messages.HISTORY_REMAINING_TIME.get("%time%", TimeParser.format(p.getRemainingMillis()));
 
-                Messages.HISTORY_LINES.sendList(sender,
+                Messages.JAILED_PLAYERS_LINES.sendList(sender,
                         "%id%", String.valueOf(p.getId()),
                         "%jail%", p.getJailName(),
+                        "%player%", p.getPlayerName(),
                         "%status%", p.getStatus().getMessage().get("%unjailer%", p.getUnjailer() == null ? "" : p.getUnjailer()),
                         "%date%", TimeParser.formatDate(p.getStartTimeStamp()),
                         "%time%", TimeParser.format(p.getDuration()),

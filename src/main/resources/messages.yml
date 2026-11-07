@@ -114,12 +114,11 @@ history:
   header: '{prefix}&cИстория наказаний игрока &e%player%&c (страница &f%page%&e/&f%pages%&e):'
 
   # Блок строк, выводится для каждого наказания на странице.
-  # Доступно: %id% - номер наказания, %date% (из format.date), %jail% - тюрьма, %time% - срок,
-  #           %remaining% - текст из format.remaining-time (у неактивных пусто),
-  #           %punisher% - кто посадил, %reason% - причина,
-  #           %status% - статус из format.status
+  # Доступно: %id% - номер наказания, %player% - ник нарушителя, %date% (из format.date), %jail% - тюрьма,
+  #           %time% - срок, %remaining% - текст из format.remaining-time (у неактивных пусто),
+  #           %punisher% - кто посадил, %reason% - причина, %status% - статус из format.status
   lines:
-    - '&7┌&e#%id%&c (&e%date%&c)'
+    - '&7┌&e#%id%&c. (&e%date%&c)'
     - '&7├&cТюрьма - &e%jail%&c, срок - &e%time%'
     - '&7├&cАдминистратор: &e%punisher%'
     - '&7├&cПричина: &e%reason%'
@@ -140,15 +139,13 @@ punishments:
   # Доступно: %player%, %page% - текущая страница, %pages% - всего страниц
   header: '{prefix}&cИстория выданных &e%player%&c наказаний (страница &f%page%&e/&f%pages%&e):'
 
-  # Блок строк, выводится для каждого наказания на странице.
-  # Доступно: %id% - номер наказания, %date% (из format.date), %jail% - тюрьма, %time% - срок,
-  #           %remaining% - текст из format.remaining-time (у неактивных пусто),
-  #           %punisher% - кто посадил, %reason% - причина,
-  #           %status% - статус из format.status.
+  # Блок строк, выводится для каждого выданного наказания на странице (Используется в т.ч. для /jailedplayers).
+  # Доступно: %id% - номер наказания, %player% - ник нарушителя, %date% (из format.date), %jail% - тюрьма,
+  #           %time% - срок, %remaining% - текст из format.remaining-time (у неактивных пусто),
+  #           %punisher% - кто посадил, %reason% - причина, %status% - статус из format.status
   lines:
-    - '&7┌&e#%id%&c (&e%date%&c)'
+    - '&7┌&e#%id%&c. &e%player%&c (&e%date%&c)'
     - '&7├&cТюрьма - &e%jail%&c, срок - &e%time%'
-    - '&7├&cАдминистратор: &e%punisher%'
     - '&7├&cПричина: &e%reason%'
     - '&7└&cСтатус: &e%status% %remaining%'
 
@@ -161,6 +158,17 @@ jailed-players:
   # Заголовок страницы.
   # Доступно: %page% - текущая страница, %pages% - всего страниц
   header: '{prefix}&cАктивные наказания (страница &f%page%&e/&f%pages%&e):'
+
+  # Блок строк, выводится для каждого выданного наказания на странице
+  # Доступно: %id% - номер наказания, %player% - ник нарушителя, %date% (из format.date), %jail% - тюрьма,
+  #           %time% - срок, %remaining% - текст из format.remaining-time (у неактивных пусто),
+  #           %punisher% - кто посадил, %reason% - причина, %status% - статус из format.status
+  lines:
+    - '&7┌&e#%id%&c. &e%player%&c (&e%date%&c)'
+    - '&7├&cТюрьма - &e%jail%&c, срок - &e%time%'
+    - '&7├&cАдминистратор: &e%punisher%'
+    - '&7├&cПричина: &e%reason%'
+    - '&7└&cСтатус: &e%status% %remaining%'
 
 # ==========================================================================
 #  /jailinfo - информация о собственном наказании
