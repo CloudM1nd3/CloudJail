@@ -34,6 +34,7 @@ command:
   usage-create: '{prefix}&cИспользование: /jailadmin create <имя> [-n]'
   usage-delete: '{prefix}&cИспользование: /jailadmin delete <имя>'
   usage-teleport: '{prefix}&cИспользование: /jailadmin teleport <имя>'
+  usage-jailcheck: '{prefix}&cИспользование: /jailcheck <ник>'
 
 # ==========================================================================
 #  Общие элементы оформления.

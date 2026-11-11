@@ -31,6 +31,7 @@ public enum Messages {
     USAGE_CREATE("command.usage-create", "{prefix}&cИспользование: /jailadmin create <имя> [-n]"),
     USAGE_DELETE("command.usage-delete", "{prefix}&cИспользование: /jailadmin delete <имя>"),
     USAGE_TELEPORT("command.usage-teleport", "{prefix}&cИспользование: /jailadmin teleport <имя>"),
+    USAGE_JAILCHECK("command.usage-jailcheck", "{prefix}&cИспользование: /jailcheck <ник>"),
 
     HISTORY_REMAINING_TIME("format.remaining-time", "&c(Осталось: &e%time%&c)"),
     STATUS_ACTIVE("format.status.active", "&aактивно"),
@@ -67,7 +68,7 @@ public enum Messages {
     PUNISHMENTS_EMPTY("punishments.empty", "{prefix}&cИгрок &e%player%&c не наказывал других игроков."),
     PUNISHMENTS_HEADER("punishments.header", "{prefix}&cИстория выданных наказаний &e%player%&c (страница &f%page%&e/&f%pages%&e):"),
     PUNISHMENTS_LINES("punishments.lines",
-            List.of("&7┌&e#%id%&c. %player% (&e%date%&c)",
+            List.of("&7┌&e#%id%&c. &e%player%&c (&e%date%&c)",
                     "&7├&cТюрьма - &e%jail%&c, срок - &e%time%",
                     "&7├&cПричина: &e%reason%",
                     "&7└&cСтатус: &e%status% %remaining%")),

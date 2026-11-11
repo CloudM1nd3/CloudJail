@@ -34,3 +34,6 @@ commands:
     description: Информация о Вашем на казании
     usage: /jailinfo
     aliases: [jinfo]
+  jailcheck:
+    description: Информация о наказании игрока
+    usage: /jailcheck <ник>
