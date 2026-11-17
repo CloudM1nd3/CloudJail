@@ -36,6 +36,12 @@ command:
   usage-teleport: '{prefix}&cИспользование: /jailadmin teleport <имя>'
   usage-jailcheck: '{prefix}&cИспользование: /jailcheck <ник>'
 
+# Анонсы в чате. Показываются всем, кроме игрока, который был посажен (для него своё сообщение)
+announce:
+  jailed: "{prefix}&cИгрок &e%player%&c посажен в тюрьму &e%jail%&c на &e%time%&c Причина: &e%reason%&c. Выдал: &e%punisher%"
+  released: "{prefix}&aИгрок &e%player%&a освобождён. Освободил: &e%unjailer%&a. Причина: &e%unjail_reason%"
+  expired: ""
+
 # ==========================================================================
 #  Общие элементы оформления.
 #  Используются в /jailhistory и /jailpunishments

@@ -39,6 +39,9 @@ public enum Messages {
     STATUS_RELEASED("format.status.released", "&eпомилован %unjailer%"),
 
     JAIL_SUCCESS("jail.jail-success", "{prefix}&cИгроку &e%player%&c порвут туза в тюрьме &e%jail%&c!"),
+    ANNOUNCE_JAILED("announce.jailed", "{prefix}&cИгрок &e%player%&c посажен в тюрьму &e%jail%&c на &e%time%&c Причина: &e%reason%&c. Выдал: &e%punisher%"),
+    ANNOUNCE_RELEASED("announce.released", "{prefix}&aИгрок &e%player%&a освобождён. Освободил: &e%unjailer%&a. Причина: &e%unjail_reason%"),
+    ANNOUNCE_EXPIRED("announce.expired", ""),
     ALREADY_JAILED("jail.already-jailed", "{prefix}&cИгрок &e%player%&c уже отбывает срок под шконкой!"),
     UNJAIL_SUCCESS("jail.unjail-success", "{prefix}&cИгрок &e%player%&c освобождён."),
     NOT_JAILED("jail.not-jailed", "{prefix}&e%player% &cне отбывает срок."),
@@ -100,7 +103,6 @@ public enum Messages {
     DENY_COMMAND("deny.command", "{prefix}&cВ тюрьме запрещено использовать эту команду."),
     DENY_ITEM_DROP("deny.item-drop", "&cВ тюрьме запрещено выбрасывать предметы."),
     DENY_ITEM_PICKUP("deny.item-pick-up", "&cВ тюрьме запрещено подбирать предметы."),
-
 
     PLACEHOLDER_JAILED("PlaceHolderAPI.jailed", "Арестован"),
     PLACEHOLDER_NOT_JAILED("PlaceHolderAPI.not_jailed", "На свободе"),

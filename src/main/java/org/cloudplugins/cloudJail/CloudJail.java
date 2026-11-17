@@ -10,6 +10,7 @@ import org.cloudplugins.cloudJail.integrations.essentials.EssentialsIntegration;
 import org.cloudplugins.cloudJail.integrations.placeholderapi.PlaceHolderApiHook;
 import org.cloudplugins.cloudJail.integrations.webhooks.WebhookManager;
 import org.cloudplugins.cloudJail.listeners.PlayerListener;
+import org.cloudplugins.cloudJail.managers.Announcer;
 import org.cloudplugins.cloudJail.managers.JailManager;
 import org.cloudplugins.cloudJail.managers.JailScoreboardManager;
 import org.cloudplugins.cloudJail.managers.PunishmentManager;
@@ -86,6 +87,7 @@ public final class CloudJail extends JavaPlugin {
         }
 
         WebhookManager.init(instance);
+        Announcer.init(instance);
     }
 
     @Override

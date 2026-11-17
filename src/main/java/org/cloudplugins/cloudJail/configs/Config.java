@@ -60,6 +60,14 @@ public class Config {
             config.set("keep-inventory-on-death", true);
         }
 
+        if (!config.isSet("announcements.chat.enable")) {
+            config.set("announcements.chat.enable", true);
+            changed = true;
+        }
+        if (!config.isSet("announcements.chat.permission")) {
+            config.set("announcements.chat.permission", "cloudjail.announce");
+            changed = true;
+        }
 
         if(!config.isSet("deny.item.pick-up")) {
             config.set("deny.item.pick-up", true);

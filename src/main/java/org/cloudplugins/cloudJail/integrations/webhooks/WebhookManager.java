@@ -8,6 +8,7 @@ import org.cloudplugins.cloudJail.configs.Config;
 import org.cloudplugins.cloudJail.integrations.webhooks.discord.DiscordResolver;
 import org.cloudplugins.cloudJail.integrations.webhooks.telegram.TelegramResolver;
 import org.cloudplugins.cloudJail.objects.Punishment;
+import org.cloudplugins.cloudJail.objects.AnnounceType;
 import org.cloudplugins.cloudJail.utils.TimeParser;
 
 import java.net.URI;
@@ -76,12 +77,12 @@ public class WebhookManager {
         }
     }
 
-    private Map<WebhookType, JsonObject> loadTemplates(ConfigurationSection platform) {
-        Map<WebhookType, JsonObject> result = new EnumMap<>(WebhookType.class);
+    private Map<AnnounceType, JsonObject> loadTemplates(ConfigurationSection platform) {
+        Map<AnnounceType, JsonObject> result = new EnumMap<>(AnnounceType.class);
         ConfigurationSection tpl = platform.getConfigurationSection("templates");
         if (tpl == null) return result;
 
-        for (WebhookType type : WebhookType.values()) {
+        for (AnnounceType type : AnnounceType.values()) {
             String raw = tpl.getString(type.name().toLowerCase(), "");
             if (raw.isBlank()) continue;
             try {
@@ -94,7 +95,7 @@ public class WebhookManager {
         return result;
     }
 
-    public static void send(WebhookType type, Punishment p) {
+    public static void send(AnnounceType type, Punishment p) {
         if (instance == null) return;
 
         Map<String, String> values;
@@ -109,7 +110,7 @@ public class WebhookManager {
         instance.safeDispatch(instance.telegram, type, values);
     }
 
-    private void safeDispatch(Target target, WebhookType type, Map<String, String> values) {
+    private void safeDispatch(Target target, AnnounceType type, Map<String, String> values) {
         try {
             dispatch(target, type, values);
         } catch (Exception e) {
@@ -117,7 +118,7 @@ public class WebhookManager {
         }
     }
 
-    private void dispatch(Target target, WebhookType type, Map<String, String> values) {
+    private void dispatch(Target target, AnnounceType type, Map<String, String> values) {
         if (target == null) return;
         JsonObject template = target.templates().get(type);
         if (template == null) return;
@@ -168,6 +169,6 @@ public class WebhookManager {
     }
 
     private record Target(String url,
-                          Map<WebhookType, JsonObject> templates,
+                          Map<AnnounceType, JsonObject> templates,
                           BiFunction<JsonObject, Map<String, String>, JsonObject> resolver) {}
 }
