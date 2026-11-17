@@ -44,20 +44,21 @@ public class Config {
     private static boolean addMissingDefaults() {
         boolean changed = false;
 
-        if (!config.isSet("offline-progress")) {
-            config.set("offline-progress", false);
+        if (!config.isSet("punishment.offline-progress")) {
+            config.set("punishment.offline-progress", false);
             changed = true;
         }
-        if (!config.isSet("afk-progress")) {
-            config.set("afk-progress", false);
+        if (!config.isSet("punishment.afk-progress")) {
+            config.set("punishment.afk-progress", false);
             changed = true;
         }
-        if (!config.isSet("autosave")) {
-            config.set("autosave", 600);
+        if (!config.isSet("punishment.autosave")) {
+            config.set("punishment.autosave", 600);
             changed = true;
         }
-        if(!config.isSet("keep-inventory-on-death")) {
-            config.set("keep-inventory-on-death", true);
+        if (!config.isSet("punishment.keep-inventory-on-death")) {
+            config.set("punishment.keep-inventory-on-death", true);
+            changed = true;
         }
 
         if (!config.isSet("announcements.chat.enable")) {
@@ -65,15 +66,17 @@ public class Config {
             changed = true;
         }
         if (!config.isSet("announcements.chat.permission")) {
-            config.set("announcements.chat.permission", "cloudjail.announce");
+            config.set("announcements.chat.permission", "");
             changed = true;
         }
 
-        if(!config.isSet("deny.item.pick-up")) {
+        if (!config.isSet("deny.item.pick-up")) {
             config.set("deny.item.pick-up", true);
+            changed = true;
         }
-        if(!config.isSet("deny.item.drop")) {
+        if (!config.isSet("deny.item.drop")) {
             config.set("deny.item.drop", true);
+            changed = true;
         }
         if (!config.isSet("deny.chat")) {
             config.set("deny.chat", true);
@@ -109,28 +112,28 @@ public class Config {
         }
         if (!config.isSet("scoreboard.lines")) {
             config.set("scoreboard.lines", List.of(
-                    "&7&m----------------",
-                    "&fМодератор: &e%moder%",
-                    "&fПричина: &e%reason%",
+                    "&7&m---------------------",
+                    "&cМодератор: &e%punisher%",
+                    "&cПричина: &e%reason%",
                     "",
-                    "&fСрок: &6%time%",
-                    "&fОсталось: &a%remaining%",
-                    "&7&m----------------"
+                    "&cСрок: &e%time%",
+                    "&cОсталось: &6%remaining%",
+                    "&7&m---------------------"
             ));
             changed = true;
         }
 
 
-        if (!config.isSet("Webhooks.Discord.enable")) {
-            config.set("Webhooks.Discord.enable", false);
+        if (!config.isSet("webhooks.discord.enable")) {
+            config.set("webhooks.discord.enable", false);
             changed = true;
         }
-        if (!config.isSet("Webhooks.Discord.url")) {
-            config.set("Webhooks.Discord.url", "https://discord.com/api/webhooks/ID/TOKEN");
+        if (!config.isSet("webhooks.discord.url")) {
+            config.set("webhooks.discord.url", "<PASTE YOUR WEBHOOK URL HERE>");
             changed = true;
         }
-        if (!config.isSet("Webhooks.Discord.templates.jailed")) {
-            config.set("Webhooks.Discord.templates.jailed", """
+        if (!config.isSet("webhooks.discord.templates.jailed")) {
+            config.set("webhooks.discord.templates.jailed", """
             {
               "allowed_mentions": { "parse": [] },
               "embeds": [{
@@ -149,8 +152,8 @@ public class Config {
             """);
             changed = true;
         }
-        if (!config.isSet("Webhooks.Discord.templates.released")) {
-            config.set("Webhooks.Discord.templates.released", """
+        if (!config.isSet("webhooks.discord.templates.released")) {
+            config.set("webhooks.discord.templates.released", """
             {
               "allowed_mentions": { "parse": [] },
               "embeds": [{
@@ -167,8 +170,8 @@ public class Config {
             """);
             changed = true;
         }
-        if (!config.isSet("Webhooks.Discord.templates.expired")) {
-            config.set("Webhooks.Discord.templates.expired", """
+        if (!config.isSet("webhooks.discord.templates.expired")) {
+            config.set("webhooks.discord.templates.expired", """
             {
               "allowed_mentions": { "parse": [] },
               "embeds": [{
@@ -186,20 +189,20 @@ public class Config {
         }
 
 
-        if (!config.isSet("Webhooks.Telegram.enable")) {
-            config.set("Webhooks.Telegram.enable", false);
+        if (!config.isSet("webhooks.telegram.enable")) {
+            config.set("webhooks.telegram.enable", false);
             changed = true;
         }
-        if (!config.isSet("Webhooks.Telegram.bot-token")) {
-            config.set("Webhooks.Telegram.bot-token", "");
+        if (!config.isSet("webhooks.telegram.bot-token")) {
+            config.set("webhooks.telegram.bot-token", "");
             changed = true;
         }
-        if (!config.isSet("Webhooks.Telegram.chat-id")) {
-            config.set("Webhooks.Telegram.chat-id", "");
+        if (!config.isSet("webhooks.telegram.chat-id")) {
+            config.set("webhooks.telegram.chat-id", "");
             changed = true;
         }
-        if (!config.isSet("Webhooks.Telegram.templates.jailed")) {
-            config.set("Webhooks.Telegram.templates.jailed", """
+        if (!config.isSet("webhooks.telegram.templates.jailed")) {
+            config.set("webhooks.telegram.templates.jailed", """
             {
               "parse_mode": "HTML",
               "text": "<b>🔒 Игрок посажен в тюрьму</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n├ ⏱ Срок: <b>{duration}</b>\\n├ 🏛 Тюрьма: <code>{jail}</code>\\n├ 📋 Причина: <i>{reason}</i>\\n└ 👮 Выдал: <code>{punisher}</code>\\n\\n🕒 {current_date}"
@@ -207,8 +210,8 @@ public class Config {
             """);
             changed = true;
         }
-        if (!config.isSet("Webhooks.Telegram.templates.released")) {
-            config.set("Webhooks.Telegram.templates.released", """
+        if (!config.isSet("webhooks.telegram.templates.released")) {
+            config.set("webhooks.telegram.templates.released", """
             {
               "parse_mode": "HTML",
               "text": "<b>✅ Игрок освобождён</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n├ 🔓 Освободил: <code>{unjailer}</code>\\n└ 📝 Причина освобождения: <i>{unjail_reason}</i>\\n\\n🕒 {current_date}"
@@ -216,8 +219,8 @@ public class Config {
             """);
             changed = true;
         }
-        if (!config.isSet("Webhooks.Telegram.templates.expired")) {
-            config.set("Webhooks.Telegram.templates.expired", """
+        if (!config.isSet("webhooks.telegram.templates.expired")) {
+            config.set("webhooks.telegram.templates.expired", """
             {
               "parse_mode": "HTML",
               "text": "<b>⌛ Срок наказания истёк</b>\\n\\n┌ 👤 Игрок: <code>{player}</code>\\n└ 📌 Статус: автоматически освобождён, срок полностью отбыт\\n\\n🕒 {current_date}"
@@ -231,7 +234,7 @@ public class Config {
     }
 
     public static void setJail(String name, Jail jail){
-        ConfigurationSection jailSec = getOrCreateSection("Jails." + name);
+        ConfigurationSection jailSec = getOrCreateSection("jails." + name);
 
         jailSec.set("world", jail.getWorldUUID() == null ? null : jail.getWorldUUID().toString());
         jailSec.set("world-name", jail.getWorldName());
@@ -244,7 +247,7 @@ public class Config {
     }
 
     public static void removeJail(String name){
-        config.set("Jails." + name, null);
+        config.set("jails." + name, null);
         save();
     }
 

@@ -42,8 +42,8 @@ public class PlayerListener implements Listener {
     }
 
     public void loadSettings() {
-        keepInventoryOnDeath = Config.getBoolean("keep-inventory-on-death", true);
-        denyItemPickup = Config.getBoolean("deny.item.pickup", true);
+        keepInventoryOnDeath = Config.getBoolean("punishment.keep-inventory-on-death", true);
+        denyItemPickup = Config.getBoolean("deny.item.pick-up", true);
         denyItemDrop = Config.getBoolean("deny.item.drop", true);
         denyChat = Config.getBoolean("deny.chat", true);
         denyMovement = Config.getBoolean("deny.movement", false);

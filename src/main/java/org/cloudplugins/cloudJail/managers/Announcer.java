@@ -38,7 +38,7 @@ public class Announcer {
 
     public void loadSettings() {
         chatAnnounceEnable = Config.getBoolean("announcements.chat.enable", true);
-        announcePermission = Config.getString("announcements.chat.permission", "cloudjail.announce");
+        announcePermission = Config.getString("announcements.chat.permission", "");
     }
 
     public void announce(AnnounceType type, Punishment punishment) {

@@ -69,7 +69,7 @@ public enum Messages {
     HISTORY_PAGE_INVALID("history.page-invalid", "{prefix}&cСтраницы &e%page%&c нет. Всего страниц: &e%pages%&c."),
 
     PUNISHMENTS_EMPTY("punishments.empty", "{prefix}&cИгрок &e%player%&c не наказывал других игроков."),
-    PUNISHMENTS_HEADER("punishments.header", "{prefix}&cИстория выданных наказаний &e%player%&c (страница &f%page%&e/&f%pages%&e):"),
+    PUNISHMENTS_HEADER("punishments.header", "{prefix}&cИстория выданных &e%player%&c наказаний (страница &f%page%&e/&f%pages%&e):"),
     PUNISHMENTS_LINES("punishments.lines",
             List.of("&7┌&e#%id%&c. &e%player%&c (&e%date%&c)",
                     "&7├&cТюрьма - &e%jail%&c, срок - &e%time%",
@@ -104,17 +104,17 @@ public enum Messages {
     DENY_ITEM_DROP("deny.item-drop", "&cВ тюрьме запрещено выбрасывать предметы."),
     DENY_ITEM_PICKUP("deny.item-pick-up", "&cВ тюрьме запрещено подбирать предметы."),
 
-    PLACEHOLDER_JAILED("PlaceHolderAPI.jailed", "Арестован"),
-    PLACEHOLDER_NOT_JAILED("PlaceHolderAPI.not_jailed", "На свободе"),
-    PLACEHOLDER_REMAINING("PlaceHolderAPI.remaining", "Оставшееся время: %time%"),
+    PLACEHOLDER_JAILED("placeholder-api.jailed", "Арестован"),
+    PLACEHOLDER_NOT_JAILED("placeholder-api.not-jailed", "На свободе"),
+    PLACEHOLDER_REMAINING("placeholder-api.remaining", "Оставшееся время: %time%"),
 
-    FORMAT_DATE_PATTERN("format.date.date-format", "dd MMMM yyyy HH:mm:ss"),
+    FORMAT_DATE_PATTERN("format.date.pattern", "dd MMMM yyyy HH:mm:ss"),
     FORMAT_DATE_TIMEZONE("format.date.timezone", "Europe/Moscow"),
     FORMAT_DATE_LOCALE("format.date.locale", "ru-RU"),
     FORMAT_UNIT_WEEKS("format.time-units.weeks", "н."),
     FORMAT_UNIT_DAYS("format.time-units.days", "д."),
     FORMAT_UNIT_HOURS("format.time-units.hours", "ч."),
-    FORMAT_UNIT_MINUTES("format.time-units.minutes", "м."),
+    FORMAT_UNIT_MINUTES("format.time-units.minutes", "мин."),
     FORMAT_UNIT_SECONDS("format.time-units.seconds", "с.");
 
 
@@ -176,7 +176,6 @@ public enum Messages {
         if (changed) {
             save();
         }
-
     }
 
     private static void save() {

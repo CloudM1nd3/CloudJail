@@ -52,9 +52,9 @@ public class JailManager {
     public void reload(){
         jailHashMap.clear();
 
-        ConfigurationSection jailsSection = Config.getOrCreateSection("Jails");
+        ConfigurationSection jailsSection = Config.getOrCreateSection("jails");
         if (!isSectionEmpty(jailsSection)) {
-            jailsSection = Config.getSection("Jails");
+            jailsSection = Config.getSection("jails");
             loadJails(jailsSection);
         }
 

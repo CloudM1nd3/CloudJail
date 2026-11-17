@@ -49,20 +49,20 @@ public class WebhookManager {
         discord = null;
         telegram = null;
 
-        ConfigurationSection root = Config.getSection("Webhooks");
+        ConfigurationSection root = Config.getSection("webhooks");
         if (root == null) return;
 
-        ConfigurationSection d = root.getConfigurationSection("Discord");
+        ConfigurationSection d = root.getConfigurationSection("discord");
         if (d != null && d.getBoolean("enable", false)) {
             String url = d.getString("url", "");
             if (url.isBlank()) {
-                plugin.getLogger().warning("Webhooks.Discord.url не указан, Discord отключён =(");
+                plugin.getLogger().warning("webhooks.discord.url не указан, Discord отключён =(");
             } else {
                 discord = new Target(url, loadTemplates(d), DiscordResolver::resolve);
             }
         }
 
-        ConfigurationSection t = root.getConfigurationSection("Telegram");
+        ConfigurationSection t = root.getConfigurationSection("telegram");
         if (t != null && t.getBoolean("enable", false)) {
             String token = t.getString("bot-token", "");
             String chatId = t.getString("chat-id", "");
