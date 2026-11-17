@@ -6,6 +6,22 @@ api-version: '26.3'
 load: POSTWORLD
 softdepend: [voicechat, PlasmoVoice, Essentials]
 
+permissions:
+  cloudjail.jail:
+    description: Посадка игрока в тюрьму
+    default: op
+  cloudjail.unjail:
+    description: Освобождение игрока
+    default: op
+  cloudjail.history:
+    description: История и списки наказаний
+    default: op
+  cloudjail.admin:
+    description: Управление тюрьмами и reload
+    default: op
+  cloudjail.announce:
+    description: Видеть анонсы о наказаниях в чате
+    default: op
 
 commands:
   jail:

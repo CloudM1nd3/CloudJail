@@ -66,7 +66,7 @@ public class Config {
             changed = true;
         }
         if (!config.isSet("announcements.chat.permission")) {
-            config.set("announcements.chat.permission", "");
+            config.set("announcements.chat.permission", "cloudjail.announce");
             changed = true;
         }
 

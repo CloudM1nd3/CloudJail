@@ -60,7 +60,7 @@ deny:
 announcements:
   chat:
     enable: true
-    permission: ""
+    permission: "cloudjail.announce"
 
 # Уведомления в Discord и Telegram.
 # Для каждого события свой JSON-шаблон. Плагин подставляет значения вместо {плейсхолдеров}.
