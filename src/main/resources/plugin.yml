@@ -2,7 +2,7 @@ name: CloudJail
 version: '${version}'
 
 main: org.cloudplugins.cloudJail.CloudJail
-api-version: '26.3'
+api-version: '1.21'
 load: POSTWORLD
 softdepend: [voicechat, PlasmoVoice, Essentials]
 

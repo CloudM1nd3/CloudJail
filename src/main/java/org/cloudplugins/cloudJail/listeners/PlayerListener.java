@@ -260,8 +260,11 @@ public class PlayerListener implements Listener {
         if (!isJailed(e.getPlayer())) return;
 
         PlayerTeleportEvent.TeleportCause cause = e.getCause();
+        String name = cause.name();
+
         if (cause == PlayerTeleportEvent.TeleportCause.ENDER_PEARL
-                || cause == PlayerTeleportEvent.TeleportCause.CONSUMABLE_EFFECT) {
+                || cause == PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT
+                || name.equals("CONSUMABLE_EFFECT")) {
             e.setCancelled(true);
         }
     }

@@ -33,7 +33,7 @@ scoreboard:
 # Запреты, пока игрок сидит в тюрьме.
 deny:
   # Голосовой чат: игрок не говорит, но слышать продолжает.
-  # Нужен Simple Voice Chat и/или Plasmo Voice.
+  # Нужен Simple Voice Chat и/или PlasmoVoice.
   voice-chat: true
 
   item:
@@ -45,6 +45,7 @@ deny:
   # Ходить нельзя, поворачивать голову можно.
   movement: false
 
+  # Кушац
   consume: false
 
   commands:

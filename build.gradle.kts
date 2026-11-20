@@ -15,15 +15,21 @@ repositories {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.3.build.+")
-    implementation("de.maxhenkel.voicechat:voicechat-api:2.6.25")
+    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
+    compileOnly("de.maxhenkel.voicechat:voicechat-api:2.6.25")
     compileOnly("su.plo.voice.api:server:2.2.0-beta.2")
-    compileOnly("net.essentialsx:EssentialsX:2.21.2")
+    compileOnly("net.essentialsx:EssentialsX:2.21.2") {
+        isTransitive = false
+    }
     compileOnly("me.clip:placeholderapi:2.12.3")
 }
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(25)
+}
+
+tasks.compileJava {
+    options.release = 21
 }
 
 tasks {
