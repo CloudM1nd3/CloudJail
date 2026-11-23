@@ -1,5 +1,6 @@
 package org.cloudplugins.cloudJail.configs;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -215,7 +216,10 @@ public enum Messages {
 
     public void send(CommandSender sender, String... replacements) {
         if (sender == null) return;
-        sender.sendMessage(ColorService.processLegacy(get(replacements)));
+        Component message = ColorService.processLegacy(get(replacements));
+        if(message.equals(Component.empty())) return;
+
+        sender.sendMessage(message);
     }
 
     public void sendList(CommandSender sender, String... replacements) {
