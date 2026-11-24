@@ -277,7 +277,7 @@ public class Database {
                 rs.getString("player"),
                 playerUUID,
                 rs.getString("punisher"),
-                rs.getString("punisher_uuid").equalsIgnoreCase("NULL") ? null : UUID.fromString(rs.getString("punisher_uuid")),
+                (rs.getString("punisher_uuid") == null) ? null : UUID.fromString(rs.getString("punisher_uuid")),
                 rs.getString("jail_name"),
                 rs.getString("reason"),
                 rs.getLong("start_timestamp"),
