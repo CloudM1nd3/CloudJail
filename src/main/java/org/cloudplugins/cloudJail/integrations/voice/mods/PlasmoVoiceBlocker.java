@@ -20,36 +20,61 @@ import java.util.UUID;
         authors = {"CloudM1nde"}
 )
 public final class PlasmoVoiceBlocker implements AddonInitializer {
+    private static volatile PlasmoVoiceBlocker instance;
+    private volatile boolean active = true;
 
     @InjectPlasmoVoice
     private PlasmoVoiceServer voiceServer;
 
-    public static void register() {
-        PlasmoVoiceServer.getAddonsLoader().load(new PlasmoVoiceBlocker());
+    public static synchronized boolean register() {
+        if (instance != null) return false;
+        PlasmoVoiceBlocker addon = new PlasmoVoiceBlocker();
+        PlasmoVoiceServer.getAddonsLoader().load(addon);
+        instance = addon;
+        return true;
+    }
+
+    public static synchronized void unregister() {
+        PlasmoVoiceBlocker addon = instance;
+        instance = null;
+        if (addon == null) return;
+        addon.active = false;
+        try {
+            PlasmoVoiceServer.getAddonsLoader().unload(addon);
+        } catch (Throwable ignored) { }
     }
 
     @Override
     public void onAddonInitialize() { }
 
     @Override
-    public void onAddonShutdown() { }
+    public void onAddonShutdown() {
+        active = false;
+    }
 
     @EventSubscribe
     public void onSpeak(PlayerServerActivationEvent event) {
-        if (isJailed(event.getPlayer().getInstance().getUuid()) && VoiceIntegration.getBlockVoiceChat()) {
+        if (shouldBlock(event.getPlayer().getInstance().getUuid()) && VoiceIntegration.getBlockVoiceChat()) {
             event.setResult(ServerActivation.Result.HANDLED);
         }
     }
 
     @EventSubscribe
     public void onSpeakEnd(PlayerServerActivationEndEvent event) {
-        if (isJailed(event.getPlayer().getInstance().getUuid()) && VoiceIntegration.getBlockVoiceChat()) {
+        if (shouldBlock(event.getPlayer().getInstance().getUuid()) && VoiceIntegration.getBlockVoiceChat()) {
             event.setResult(ServerActivation.Result.HANDLED);
         }
     }
 
-    private boolean isJailed(UUID uuid) {
-        PunishmentManager manager = PunishmentManager.getInstance();
-        return manager != null && manager.isJailed(uuid);
+    private boolean shouldBlock(UUID uuid) {
+        if (!active) return false;
+        try {
+            if (!VoiceIntegration.getBlockVoiceChat()) return false;
+            PunishmentManager punishmentManager = PunishmentManager.getInstance();
+            return punishmentManager != null && punishmentManager.isJailed(uuid);
+        } catch (Throwable t) {
+            active = false;
+            return false;
+        }
     }
 }

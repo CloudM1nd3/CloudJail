@@ -28,10 +28,14 @@ public class VoiceIntegration {
         if (Bukkit.getPluginManager().getPlugin("PlasmoVoice") == null) return;
 
         try {
-            PlasmoVoiceBlocker.register();
-            plasmoActive = true;
-            plugin.getLogger().info("PlasmoVoice-API подключено^_^");
+            plasmoActive = PlasmoVoiceBlocker.register();
+            if (plasmoActive) {
+                plugin.getLogger().info("PlasmoVoice-API подключено^_^");
+            } else {
+                plugin.getLogger().warning("PlasmoVoice-API уже было подключено :с");
+            }
         } catch (Throwable t) {
+            plasmoActive = false;
             plugin.getLogger().warning("PlasmoVoice-API не работает :с - " + t);
         }
     }
@@ -45,10 +49,28 @@ public class VoiceIntegration {
                 plugin.getLogger().info("SimpleVoiceChat-API подключено ^_^");
             }
         } catch (Throwable t) {
+            svcActive = false;
             plugin.getLogger().warning("SimpleVoiceChat-API не работает: " + t);
         }
     }
 
-    public boolean isSVCActive()    { return svcActive; }
-    public boolean isPlasmoVoiceActive() { return plasmoActive; }
+    public void unload() {
+        try {
+            PlasmoVoiceBlocker.unregister();
+        } catch (Throwable ignored) { }
+        try {
+            SVCBlocker.unregister();
+        } catch (Throwable ignored) { }
+
+        plasmoActive = false;
+        svcActive = false;
+    }
+
+    public boolean isSVCActive() {
+        return svcActive;
+    }
+
+    public boolean isPlasmoVoiceActive() {
+        return plasmoActive;
+    }
 }

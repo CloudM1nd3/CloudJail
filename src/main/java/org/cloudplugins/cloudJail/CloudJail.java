@@ -101,6 +101,9 @@ public final class CloudJail extends JavaPlugin {
         if (db != null) {
             db.close();
         }
+        if(voiceIntegration != null){
+            voiceIntegration.unload();
+        }
         instance = null;
     }
 

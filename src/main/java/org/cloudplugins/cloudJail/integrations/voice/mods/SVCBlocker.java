@@ -10,14 +10,28 @@ import org.cloudplugins.cloudJail.managers.PunishmentManager;
 import org.cloudplugins.cloudJail.integrations.voice.VoiceIntegration;
 
 public class SVCBlocker implements VoicechatPlugin {
+    private static volatile SVCBlocker instance;
+    private volatile boolean active = true;
 
-    public static boolean register(JavaPlugin plugin) {
-        BukkitVoicechatService service =
-                plugin.getServer().getServicesManager().load(BukkitVoicechatService.class);
+    public static synchronized boolean register(JavaPlugin plugin) {
+        if (instance != null) return false;
+
+        BukkitVoicechatService service = plugin.getServer().getServicesManager().load(BukkitVoicechatService.class);
         if (service == null) return false;
 
-        service.registerPlugin(new SVCBlocker());
+        SVCBlocker blocker = new SVCBlocker();
+        service.registerPlugin(blocker);
+        instance = blocker;
         return true;
+    }
+
+    public static synchronized void unregister() {
+        SVCBlocker blocker = instance;
+        if (blocker == null) {
+            return;
+        }
+        instance = null;
+        blocker.active = false;
     }
 
     @Override
@@ -31,14 +45,20 @@ public class SVCBlocker implements VoicechatPlugin {
     }
 
     private void onMicrophone(MicrophonePacketEvent event) {
-        if (!VoiceIntegration.getBlockVoiceChat()) return;
+        if (!active) return;
 
-        VoicechatConnection sender = event.getSenderConnection();
-        if (sender == null) return;
+        try {
+            if (!VoiceIntegration.getBlockVoiceChat()) return;
 
-        PunishmentManager manager = PunishmentManager.getInstance();
-        if (manager != null && manager.isJailed(sender.getPlayer().getUuid())) {
-            event.cancel();
+            VoicechatConnection sender = event.getSenderConnection();
+            if (sender == null) return;
+
+            PunishmentManager manager = PunishmentManager.getInstance();
+            if (manager != null && manager.isJailed(sender.getPlayer().getUuid())) {
+                event.cancel();
+            }
+        } catch (Throwable t) {
+            active = false;
         }
     }
 }
