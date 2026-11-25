@@ -15,6 +15,7 @@ import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
 import org.cloudplugins.cloudJail.objects.PunishmentStatus;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -99,7 +100,7 @@ public class PunishmentManager {
         if (pendingReturns.containsKey(uuid)) {
             teleportBack(player, pendingReturns.remove(uuid));
             Messages.SET_RELEASED.send(player);
-            db.removePendingReturn(uuid);
+            db.removeLastLocation(uuid);
         }
 
         Punishment p = activePunishments.get(player.getUniqueId());
@@ -166,7 +167,7 @@ public class PunishmentManager {
 
         if (pendingReturns.containsKey(uuid)) {
             pendingReturns.remove(uuid);
-            db.removePendingReturn(uuid);
+            db.removeLastLocation(uuid);
         }
 
         long now = System.currentTimeMillis();

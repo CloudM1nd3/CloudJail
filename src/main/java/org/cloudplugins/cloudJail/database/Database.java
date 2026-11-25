@@ -3,6 +3,7 @@ package org.cloudplugins.cloudJail.database;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.cloudplugins.cloudJail.CloudJail;
 import org.cloudplugins.cloudJail.objects.PageDisplay;
 import org.cloudplugins.cloudJail.objects.Punishment;
 import org.cloudplugins.cloudJail.objects.PunishmentStatus;
@@ -18,12 +19,15 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class Database {
+    CloudJail plugin;
     private final Connection connection;
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
-    public Database(File file) throws SQLException {
+    public Database(CloudJail plugin, File file) throws SQLException {
+        this.plugin = plugin;
         connection = DriverManager.getConnection("jdbc:sqlite:" + file.getAbsolutePath());
         try (Statement st = connection.createStatement()) {
             st.execute("CREATE TABLE IF NOT EXISTS punishments (" +
@@ -59,8 +63,12 @@ public class Database {
 
     public void insertPunishment(Punishment p) {
         executor.execute(() -> {
-            insert(p);
-            saveLastLocation(p.getPlayerUUID(), p.getLastLocation());
+            try {
+                insert(p);
+                saveLastLocation(p.getPlayerUUID(), p.getLastLocation());
+            } catch (SQLException e){
+                plugin.getLogger().log(Level.SEVERE, "Failed to insert punishment for " + p.getPlayerName(), e);
+            }
         });
     }
 
@@ -76,20 +84,28 @@ public class Database {
                 ps.setString(4, p.getEndTimeStamp().toString());
                 ps.setString(5, p.getPlayerUUID().toString());
                 ps.executeUpdate();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
-            if (playerOnline) {
-                deleteLastLocation(p.getPlayerUUID());
-            } else {
-                markPendingReturn(p.getPlayerUUID());
+                if (playerOnline) {
+                    deleteLastLocation(p.getPlayerUUID());
+                } else {
+                    markPendingReturn(p.getPlayerUUID());
+                }
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to release punishment for " + p.getPlayerName(), e);
             }
         });
     }
 
-    public void removePendingReturn(UUID uuid) {
-        executor.execute(() -> deleteLastLocation(uuid));
+    public void removeLastLocation(UUID uuid){
+        executor.execute(() -> {
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "DELETE FROM last_locations WHERE player_uuid = ?")) {
+                ps.setString(1, uuid.toString());
+                ps.executeUpdate();
+            } catch (SQLException e) {
+                plugin.getLogger().log(Level.SEVERE, "Failed to delete last location of " + uuid, e);
+            }
+        });
     }
 
     public void updatePendingTeleport(UUID uuid, boolean pending) {
@@ -100,7 +116,7 @@ public class Database {
                 ps.setString(2, uuid.toString());
                 ps.executeUpdate();
             } catch (SQLException e) {
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Failed to update pending teleport for " + uuid, e);
             }
         });
     }
@@ -113,7 +129,7 @@ public class Database {
                 ps.setString(2, uuid.toString());
                 ps.executeUpdate();
             } catch (SQLException e) {
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Failed to update remaining time for " + uuid, e);
             }
         });
     }
@@ -128,7 +144,7 @@ public class Database {
                     list.add(readPunishment(rs));
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Failed to load active punishments", e);
             }
             return list;
         }, executor);
@@ -144,7 +160,7 @@ public class Database {
                     map.put(UUID.fromString(rs.getString("player_uuid")), readLocation(rs));
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                plugin.getLogger().log(Level.SEVERE, "Failed to load pending returns", e);
             }
             return map;
         }, executor);
@@ -166,7 +182,7 @@ public class Database {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) total = rs.getInt(1);
         } catch (SQLException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to count punishments by " + column + " for " + uuid, e);
         }
 
         List<Punishment> list = new ArrayList<>();
@@ -177,7 +193,7 @@ public class Database {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) list.add(readPunishment(rs));
         } catch (SQLException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to load punishments page " + page + " by " + column + " for " + uuid, e);
         }
 
         return new PageDisplay(list, Math.max(1, (total + 4) / 5), total);
@@ -196,7 +212,7 @@ public class Database {
         try { connection.close(); } catch (SQLException ignored) {}
     }
 
-    private void insert(Punishment p) {
+    private void insert(Punishment p) throws SQLException{
         String sql = "INSERT INTO punishments (player, player_uuid, punisher, punisher_uuid, jail_name, reason, " +
                 "start_timeStamp, duration, remainingMillis, status, pending_teleport) VALUES (?,?,?,?,?,?,?,?,?,?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -222,12 +238,10 @@ public class Database {
                     p.setId(keys.getInt(1));
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    private void saveLastLocation(UUID uuid, Location location) {
+    private void saveLastLocation(UUID uuid, Location location) throws SQLException {
         if (location == null || location.getWorld() == null) return;
 
         String sql = "INSERT OR REPLACE INTO last_locations " +
@@ -243,18 +257,16 @@ public class Database {
             ps.setDouble(7, location.getYaw());
             ps.setDouble(8, location.getPitch());
             ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-    private void deleteLastLocation(UUID uuid) {
+    private void deleteLastLocation(UUID uuid) throws SQLException {
         try (PreparedStatement ps = connection.prepareStatement(
                 "DELETE FROM last_locations WHERE player_uuid = ?")) {
             ps.setString(1, uuid.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to delete last location of " + uuid, e);
         }
     }
 
@@ -264,7 +276,7 @@ public class Database {
             ps.setString(1, uuid.toString());
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to mark pending return for " + uuid, e);
         }
     }
 
@@ -303,7 +315,7 @@ public class Database {
             ResultSet rs = ps.executeQuery();
             return rs.next() ? readLocation(rs) : null;
         } catch (SQLException e) {
-            e.printStackTrace();
+            plugin.getLogger().log(Level.SEVERE, "Failed to load last location of " + uuid, e);
             return null;
         }
     }

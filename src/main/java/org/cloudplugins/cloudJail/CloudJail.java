@@ -42,7 +42,7 @@ public final class CloudJail extends JavaPlugin {
         Messages.init(instance);
 
         try {
-            db = new Database(new File(getDataFolder(), "punishments.db"));
+            db = new Database(instance, new File(getDataFolder(), "punishments.db"));
             JailManager.init(this);
             PunishmentManager.init(this, db);
             TimeParser.loadSettings();
